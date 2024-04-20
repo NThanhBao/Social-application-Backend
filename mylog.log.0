@@ -1,0 +1,3 @@
+[2024-04-20 22:39:58.146] - 21208 INFO [main] --- org.apache.catalina.core.StandardService: Starting service [Tomcat]
+[2024-04-20 22:39:58.147] - 21208 INFO [main] --- org.apache.catalina.core.StandardEngine: Starting Servlet engine: [Apache Tomcat/10.1.19]
+[2024-04-20 22:39:58.201] - 21208 INFO [main] --- org.apache.catalina.core.ContainerBase.[Tomcat].[localhost].[/]: Initializing Spring embedded WebApplicationContext
