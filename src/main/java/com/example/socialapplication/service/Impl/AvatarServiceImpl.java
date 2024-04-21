@@ -1,11 +1,14 @@
 package com.example.socialapplication.service.Impl;
 
+import com.example.socialapplication.config.MinIOConfig;
 import com.example.socialapplication.model.entity.Users;
 import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.AvatarService;
+import com.example.socialapplication.util.exception.NotFoundException;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
+import io.minio.StatObjectArgs;
 import io.minio.errors.MinioException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +26,13 @@ public class AvatarServiceImpl implements AvatarService {
 
     private final MinioClient minioClient;
     private final UsersRepository usersRepository;
+    private final MinIOConfig minIOConfig;
+    String bucketName = "avatar";
     Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
-    public AvatarServiceImpl(MinioClient minioClient, UsersRepository usersRepository) {
+    public AvatarServiceImpl(MinioClient minioClient, UsersRepository usersRepository, MinIOConfig minIOConfig) {
         this.minioClient = minioClient;
         this.usersRepository = usersRepository;
+        this.minIOConfig = minIOConfig;
     }
 
 
@@ -38,60 +44,59 @@ public class AvatarServiceImpl implements AvatarService {
 
         String userId = currentUser.getId();
 
-        String bucketName = "avatar";
+        try{
+            // Kiểm tra bucketName
+            minIOConfig.checkBucketName(minioClient);
 
-        try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
-            String objectName = userId + "/" + file.getOriginalFilename();
-            minioClient.putObject(
-                    PutObjectArgs.builder()
-                            .bucket(bucketName)
-                            .object(objectName)
-                            .stream(inputStream, inputStream.available(), -1)
-                            .contentType(getContentType(objectName))
-                            .build()
-            );
-            String avatarUrl = "http://localhost:9000/" + bucketName + "/" + objectName;
-            currentUser.setAvatar(avatarUrl);
-            usersRepository.save(currentUser);
-            logger.info("File {} uploaded successfully for user {}", file.getOriginalFilename(), currentUsername);
+            try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
+                String objectName = userId + "/" + file.getOriginalFilename();
+                minioClient.putObject(
+                        PutObjectArgs.builder()
+                                .bucket(bucketName)
+                                .object(objectName)
+                                .stream(inputStream, inputStream.available(), -1)
+                                .contentType(getContentType(objectName))
+                                .build()
+
+                );
+                String avatarUrl = "http://localhost:9000/" + bucketName + "/" + objectName;
+                currentUser.setAvatar(avatarUrl);
+                usersRepository.save(currentUser);
+                logger.info("Tệp {} đã được tải lên thành công cho người dùng {}", file.getOriginalFilename(), currentUsername);
+            }
         } catch (Exception e) {
-            logger.error("Error uploading file to MinIO", e);
-            throw new Exception("Error uploading file to MinIO", e);
+            logger.error("Lỗi khi tải tệp lên MinIO", e);
+            throw new Exception("Lỗi khi tải tệp lên MinIO", e);
         }
     }
     @Override
-    public void deleteAvatar(String objectName) throws IOException {
+    public void deleteAvatar(String objectName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
 
         String userId = currentUser.getId();
 
-        String bucketName = "avatar";
         try {
-            String objectFullName = userId + "/" + objectName;
-
+            String filepath = userId + "/" + objectName;
+            // Kiểm tra xem tệp tồn tại trên MinIO hay không
+            minioClient.statObject(
+                    StatObjectArgs.builder()
+                            .bucket(bucketName)
+                            .object(filepath)
+                            .build()
+            );
             // Xóa tập tin từ MinIO
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
-                            .object(objectFullName)
+                            .object(filepath)
                             .build()
             );
-
-            // Cập nhật cơ sở dữ liệu
-            // Đặt đường dẫn avatar của người dùng thành null
             currentUser.setAvatar(null);
-            // Lưu thay đổi vào cơ sở dữ liệu
             usersRepository.save(currentUser);
-
-            logger.info("File {} deleted successfully for user {}", objectName, currentUsername);
-        } catch (MinioException e) {
-            logger.error("Failed to delete file: " + e.getMessage(), e);
-            throw new IOException("Failed to delete file: " + e.getMessage());
-        } catch (NoSuchAlgorithmException | InvalidKeyException e) {
-            logger.error("An unexpected error occurred: " + e.getMessage(), e);
-            throw new RuntimeException(e);
+        } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
+            throw new NotFoundException("Không tìm thấy tệp đính kèm từ MinIO: " + e.getMessage());
         }
     }
     private String getContentType(String fileName) {

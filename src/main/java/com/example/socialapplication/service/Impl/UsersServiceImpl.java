@@ -45,11 +45,13 @@ public class UsersServiceImpl implements UsersService {
         this.userRepository = userRepository;
     }
 
+//    Lấy danh sách tất cả người dùng.
     @Override
     public List<Users> getAllUsers() {
         return userRepository.findAll();
     }
 
+//    Phương thức load thông tin người dùng theo tên đăng nhập.
     @Override
     public UserDetails loadUserByUsername(String username) {
         Users users = userRepository.findByUsername(username);
@@ -58,6 +60,8 @@ public class UsersServiceImpl implements UsersService {
         }
         return new CustomUserDetails(users);
     }
+
+//    Phương thức đăng nhập người dùng.
     @Override
     public UserDetails login(String username, String password) {
         UserDetails userDetails = loadUserByUsername(username);
@@ -69,11 +73,13 @@ public class UsersServiceImpl implements UsersService {
         return userDetails;
     }
 
+//    Lấy thông tin người dùng theo username.
     @Override
     public Users getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+//    Lấy thông tin người dùng theo ID.
     @Override
     public UsersInfoDto getUserById(String userId) {
         Users user = userRepository.findById(userId).orElse(null);
@@ -93,6 +99,8 @@ public class UsersServiceImpl implements UsersService {
         usersDto.setAvatar(user.getAvatar());
         return usersDto;
     }
+
+//    Phương thức thêm người dùng mới.
     @Override
     public ResponseEntity<String> addUser(UsersDto registerDTO) {
         logger.info("Đang thêm người dùng với tên đăng nhập: {}", registerDTO.getUsername());
@@ -136,6 +144,7 @@ public class UsersServiceImpl implements UsersService {
         return ResponseEntity.ok("Tạo thành công với tên đăng nhập: " + user.getUsername());
     }
 
+//    Phương thức cập nhật thông tin người dùng.
     @Override
     public ResponseEntity<String> updateUser(UsersDto updatedUserDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -163,7 +172,7 @@ public class UsersServiceImpl implements UsersService {
         return ResponseEntity.ok("Cập nhật thành công usernames : " + existingUser.getUsername());
     }
 
-
+//    Phương thức xóa người dùng.
     @Override
     public ResponseEntity<String> deleteUser(String username) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -183,6 +192,7 @@ public class UsersServiceImpl implements UsersService {
         return ResponseEntity.ok("Bạn đã xóa thành công tài khoản của mình.");
     }
 
+//    Phương thức cập nhật mật khẩu của người dùng.
     @Override
     public ResponseEntity<String> updatePassword(String email, String newPassword) {
         Users user = userRepository.findByEmail(email);
@@ -196,6 +206,4 @@ public class UsersServiceImpl implements UsersService {
         logger.info("Mật khẩu của người dùng với email '{}' đã được cập nhật thành công", email);
         return ResponseEntity.ok("Mật khẩu cập nhật thành công.");
     }
-
-
 }

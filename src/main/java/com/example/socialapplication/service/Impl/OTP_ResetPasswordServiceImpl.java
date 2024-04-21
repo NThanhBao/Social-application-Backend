@@ -25,7 +25,6 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
     private final OTP_ResetPasswordRepository otpRepository;
     private final UsersRepository userRepository;
     private static final int OTP_EXPIRATION_MINUTES = 5;
-    private static final int OTP_EXPIRATION_SECONDS = 10;
     private static final Logger logger = LoggerFactory.getLogger(FollowServiceImpl.class);
 
     public OTP_ResetPasswordServiceImpl(JavaMailSender javaMailSender, OTP_ResetPasswordRepository otpRepository, UsersRepository userRepository) {
@@ -34,6 +33,8 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         this.userRepository = userRepository;
 
     }
+
+//    Phương thức gửi email.
     @Override
     public void sendEmail(String to, String subject, String content) {
         logger.info("Đang gửi email đến: {}", to);
@@ -47,16 +48,18 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
             logger.info("Email đã được gửi thành công đến: {}", to);
         } catch (MessagingException e) {
             logger.error("Gửi email đến '{}' thất bại.", to, e);
-            throw new RuntimeException("Failed to send email.");
+            throw new RuntimeException("Gửi email thất bại.");
         }
     }
+
+//    Phương thức tạo mã OTP và gửi email xác nhận cho người dùng.
     @Override
     public String generateOTPAndSendEmail(String mail) {
         logger.info("Đang tạo mã OTP và gửi email xác nhận cho người dùng với email: {}", mail);
         Users user = userRepository.findByEmail(mail);
         if (user == null) {
             logger.error("Không tìm thấy người dùng với email: {}", mail);
-            throw new RuntimeException("User not found with email: " + mail);
+            throw new RuntimeException("Không tìm thấy người dùng với email: " + mail);
         }
         String otp = generateOTP();
         String fullName = user.getLastName();
@@ -67,6 +70,8 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         logger.info("Mã OTP đã được tạo và gửi thành công đến email: {}", mail);
         return otp;
     }
+
+//    Phương thức lưu mã OTP vào cơ sở dữ liệu.
     @Override
     public void saveOTP(String mail, String otp, Timestamp expirationTime) {
         logger.info("Đang lưu mã OTP cho email: {}", mail);
@@ -77,6 +82,8 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         otpRepository.save(otpEntity);
         logger.info("Mã OTP đã được lưu thành công cho email: {}", mail);
     }
+
+//    Phương thức tạo mã OTP.
     @Override
     public String generateOTP() {
         logger.info("Đang tạo mã OTP mới");
@@ -90,26 +97,34 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         logger.info("Mã OTP mới đã được tạo: {}", otp.toString());
         return otp.toString();
     }
+
+//    Phương thức xác thực mã OTP.
     @Override
     public ResponseEntity<String> validateOTP(String mail, String otp) {
-        logger.info("Validating OTP for email: {}", mail);
+        logger.info("Xác thực OTP cho email: {}", mail);
         OTP_ResetPassword otpEntity = otpRepository.findByMailAndOtp(mail, otp);
         if (otpEntity == null) {
-            logger.warn("Invalid OTP for email: {}", mail);
-            return new ResponseEntity<>("Invalid OTP.", HttpStatus.BAD_REQUEST);
+            logger.warn("OTP không hợp lệ cho email: {}", mail);
+            return new ResponseEntity<>("OTP không hợp lệ.", HttpStatus.BAD_REQUEST);
+        }
+        if (otpEntity.isUsed()) {
+            logger.warn("OTP đã được sử dụng cho email: {}", mail);
+            return new ResponseEntity<>("OTP đã được sử dụng.", HttpStatus.BAD_REQUEST);
         }
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         Timestamp expirationTime = otpEntity.getExpirationTime();
         if (currentTime.after(expirationTime)) {
-            logger.warn("OTP has expired for email: {}", mail);
-            return new ResponseEntity<>("OTP has expired.", HttpStatus.BAD_REQUEST);
+            logger.warn("OTP đã hết hạn cho email: {}", mail);
+            return new ResponseEntity<>("OTP đã hết hạn.", HttpStatus.BAD_REQUEST);
         }
-        // Mark OTP as used
+        // Đánh dấu OTP đã được sử dụng
         otpEntity.setUsed(true);
-        otpRepository.save(otpEntity); // Update database
-        logger.info("OTP validated successfully for email: {}", mail);
-        return new ResponseEntity<>("OTP is valid.", HttpStatus.OK);
+        otpRepository.save(otpEntity); // Cập nhật vào cơ sở dữ liệu
+        logger.info("OTP đã được xác thực thành công cho email: {}", mail);
+        return new ResponseEntity<>("OTP hợp lệ.", HttpStatus.OK);
     }
+
+//    Phương thức tạo nội dung email chứa mã OTP.
     private String generateOTPContent(String fullName, String otp) {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("<html><body style='font-family: Arial, sans-serif;'>");
@@ -126,6 +141,8 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         emailContent.append("</body></html>");
         return emailContent.toString();
     }
+
+//    Phương thức tính thời gian hết hạn của mã OTP.
     private Timestamp calculateExpirationTime() {
         long currentTimeMillis = System.currentTimeMillis();
         long expirationTimeMillis = currentTimeMillis + (OTP_EXPIRATION_MINUTES * 60 * 1000);

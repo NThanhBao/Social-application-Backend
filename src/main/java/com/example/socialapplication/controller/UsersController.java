@@ -5,7 +5,6 @@ import com.example.socialapplication.model.dto.UsersDto;
 import com.example.socialapplication.service.Impl.UsersServiceImpl;
 import com.example.socialapplication.service.SearchUsersService;
 import com.example.socialapplication.util.annotation.CheckLogin;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -116,7 +115,7 @@ public class UsersController {
     @GetMapping("/search")
     public ResponseEntity<List<SearchUserDto>> searchUsersByFullName(@RequestParam String fullName,
                                                                      @RequestParam(defaultValue = "0") int page,
-                                                                     @RequestParam(defaultValue = "10") int pageSize,
+                                                                     @RequestParam(defaultValue = "100") int pageSize,
                                                                      @RequestParam(defaultValue = "createAt") String sortName,
                                                                      @RequestParam(defaultValue = "DESC") String sortType) {
         try {
