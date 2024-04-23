@@ -14,6 +14,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/avatar")
 public class AvatarController {
 
@@ -23,6 +24,7 @@ public class AvatarController {
         this.avatarService = avatarService;
     }
 
+    @CheckLogin
     @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
@@ -32,8 +34,6 @@ public class AvatarController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
         }
     }
-
-
     @CheckLogin
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAvt(@RequestParam("objectName") String objectName) {

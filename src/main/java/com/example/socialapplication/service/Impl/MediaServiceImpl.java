@@ -1,8 +1,10 @@
 package com.example.socialapplication.service.Impl;
 
+import com.example.socialapplication.model.entity.Medias;
 import com.example.socialapplication.model.entity.Users;
+import com.example.socialapplication.repositories.MediaRepository;
 import com.example.socialapplication.repositories.UsersRepository;
-import com.example.socialapplication.service.AvatarService;
+import com.example.socialapplication.service.MediaService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import io.minio.*;
 import io.minio.errors.MinioException;
@@ -13,38 +15,41 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 @Service
-public class AvatarServiceImpl implements AvatarService {
-
+public class MediaServiceImpl implements MediaService {
     private final MinioClient minioClient;
     private final UsersRepository usersRepository;
+    private final MediaRepository mediaRepository;
+    String bucketName = "posts";
+    private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 
-    String bucketName = "avatar";
-    Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
-    public AvatarServiceImpl(MinioClient minioClient, UsersRepository usersRepository) {
+    public MediaServiceImpl(MinioClient minioClient, UsersRepository usersRepository, MediaRepository mediaRepository) {
         this.minioClient = minioClient;
         this.usersRepository = usersRepository;
+        this.mediaRepository = mediaRepository;
     }
 
-
     @Override
-    public void uploadAvatar(MultipartFile file) throws Exception {
+    public void uploadMedia(MultipartFile filePath) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
-
         String userId = currentUser.getId();
 
-        try{
+        try {
             // Kiểm tra bucketName
             checkBucketName(minioClient);
 
-            try (InputStream inputStream = new BufferedInputStream(file.getInputStream())) {
-                String objectName = userId + "/" + file.getOriginalFilename();
+            try (InputStream inputStream = new BufferedInputStream(filePath.getInputStream())) {
+                String originalFileName = filePath.getOriginalFilename();
+                String objectName = userId + "/" + originalFileName;
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
@@ -52,29 +57,34 @@ public class AvatarServiceImpl implements AvatarService {
                                 .stream(inputStream, inputStream.available(), -1)
                                 .contentType(getContentType(objectName))
                                 .build()
-
                 );
-                String avatarUrl = bucketName + "/" + objectName;
-                currentUser.setAvatar(avatarUrl);
-                usersRepository.save(currentUser);
-                logger.info("Tệp {} đã được tải lên thành công cho người dùng {}", file.getOriginalFilename(), currentUsername);
+
+                Medias medias = new Medias();
+                medias.setId(UUID.randomUUID().toString());
+                medias.setBaseName(filePath.getOriginalFilename());
+                medias.setPublicUrl(objectName);
+
+                mediaRepository.save(medias);
+
+                logger.info("File {} uploaded successfully to MinIO for user {}", originalFileName, currentUsername);
             }
         } catch (Exception e) {
-            logger.error("Lỗi khi tải tệp lên MinIO", e);
-            throw new Exception("Lỗi khi tải tệp lên MinIO", e);
+            logger.error("Error uploading file to MinIO", e);
+            throw new Exception("Error uploading file to MinIO", e);
         }
     }
 
+
     @Override
-    public void deleteAvatar(String objectName) {
+    public void deletePost(String objectName) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
-
         String userId = currentUser.getId();
 
         try {
             String filepath = userId + "/" + objectName;
+
             // Kiểm tra xem tệp tồn tại trên MinIO hay không
             minioClient.statObject(
                     StatObjectArgs.builder()
@@ -82,18 +92,18 @@ public class AvatarServiceImpl implements AvatarService {
                             .object(filepath)
                             .build()
             );
-            // Xóa tập tin từ MinIO
+
+            // Nếu tệp tồn tại, thực hiện xóa
             minioClient.removeObject(
                     RemoveObjectArgs.builder()
                             .bucket(bucketName)
                             .object(filepath)
                             .build()
             );
-            currentUser.setAvatar(null);
-            usersRepository.save(currentUser);
-            logger.info("Avatar deleted successfully for user: {}", currentUsername);
+
+            logger.info("File {} deleted successfully from MinIO for user {}", objectName, currentUsername);
         } catch (MinioException | InvalidKeyException | IOException | NoSuchAlgorithmException e) {
-            logger.error("Error deleting avatar for user {}: {}", currentUsername, e.getMessage());
+            logger.error("Error deleting file from MinIO", e);
             throw new NotFoundException("Không tìm thấy tệp đính kèm từ MinIO: " + e.getMessage());
         }
     }
@@ -105,7 +115,11 @@ public class AvatarServiceImpl implements AvatarService {
             case "png" -> "image/png";
             case "gif" -> "image/gif";
             case "bmp" -> "image/bmp";
-            default -> "application/octet-stream"; // Kiểu MIME mặc định
+            case "mp4" -> "video/mp4";
+            case "avi" -> "video/x-msvideo";
+            case "mov" -> "video/quicktime";
+            case "wmv" -> "video/x-ms-wmv";
+            default -> "application/octet-stream";
         };
     }
 
@@ -113,11 +127,13 @@ public class AvatarServiceImpl implements AvatarService {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex + 1);
     }
+
     public void checkBucketName(MinioClient minioClient) throws Exception {
 
         BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
                 .bucket(bucketName)
                 .build();
+
         if (minioClient.bucketExists(bucketExistsArgs)) {
             System.out.println(bucketName + " exists.");
         } else {
@@ -126,6 +142,7 @@ public class AvatarServiceImpl implements AvatarService {
                     .build();
 
             minioClient.makeBucket(makeBucketArgs);
+
             System.out.println(bucketName + " created.");
         }
     }

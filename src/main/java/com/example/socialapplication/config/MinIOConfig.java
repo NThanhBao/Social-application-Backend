@@ -1,7 +1,5 @@
 package com.example.socialapplication.config;
 
-import io.minio.BucketExistsArgs;
-import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -33,24 +31,5 @@ public class MinIOConfig {
                 .endpoint(endpoint)
                 .credentials(accessKey, secretKey)
                 .build();
-    }
-    public void checkBucketName(MinioClient minioClient) throws Exception {
-        String bucketName = "posts";
-
-        BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()
-                .bucket(bucketName)
-                .build();
-
-        if (minioClient.bucketExists(bucketExistsArgs)) {
-            System.out.println(bucketName + " exists.");
-        } else {
-            MakeBucketArgs makeBucketArgs = MakeBucketArgs.builder()
-                    .bucket(bucketName)
-                    .build();
-
-            minioClient.makeBucket(makeBucketArgs);
-
-            System.out.println(bucketName + " created.");
-        }
     }
 }

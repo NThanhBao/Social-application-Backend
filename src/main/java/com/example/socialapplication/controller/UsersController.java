@@ -35,7 +35,7 @@ import java.util.Map;
 
 @Controller
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/auth")
 public class UsersController {
     private final UsersService userService;

@@ -1,5 +1,6 @@
 package com.example.socialapplication.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,7 +11,14 @@ import java.util.UUID;
 @Table(name = "medias")
 public class Medias {
     @Id
+
+    @Column(name = "id", columnDefinition = "CHAR(36)")
+
     private String id;
+
+    public Medias() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     @Column(name = "base_name")
     private String baseName;
@@ -19,10 +27,14 @@ public class Medias {
     private String publicUrl;
 
     @ManyToOne
+    @JsonBackReference
     @JoinColumn(name = "post_id")
     private Posts postsId;
 
-    public Medias() {
-        this.id = UUID.randomUUID().toString();
+    public Medias(String id) {
+        this.id = id;
+    }
+    public void setPostsId(Posts postId) {
+        this.postsId = postId;
     }
 }

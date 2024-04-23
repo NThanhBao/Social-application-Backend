@@ -1,9 +1,12 @@
 package com.example.socialapplication.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -11,10 +14,17 @@ import java.util.UUID;
 @Table(name = "posts")
 public class Posts {
     @Id
+    @Column(name = "id", updatable = false, nullable = false)
     private String id;
+
+    public Posts() {
+        this.id = UUID.randomUUID().toString();
+    }
 
     private String title;
 
+    @Column
+    @NotNull
     private String body;
 
     private String status;
@@ -27,12 +37,25 @@ public class Posts {
 
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private Users usersId;
+    private Users userId;
 
     @Column(name = "created_at")
     private Timestamp createAt;
 
-    public Posts() {
-        this.id = UUID.randomUUID().toString();
+    @JsonManagedReference
+    @OneToMany(mappedBy = "postsId", cascade = CascadeType.ALL, fetch = FetchType.EAGER )
+    private List<Medias> medias;
+
+    @Override
+    public String toString() {
+        return "Posts{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", body='" + body + '\'' +
+                ", status='" + status + '\'' +
+                ", totalLike=" + totalLike +
+                ", totalComment=" + totalComment +
+                ", createAt=" + createAt +
+                '}';
     }
 }
