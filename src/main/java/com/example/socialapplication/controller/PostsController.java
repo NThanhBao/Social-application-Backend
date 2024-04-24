@@ -27,12 +27,12 @@ import java.util.UUID;
 @RequestMapping("/posts")
 public class PostsController {
     private final PostsService postsService;
-    @Autowired
-    private MediaService postService;
+    private final MediaService postService;
 
     @Autowired
-    public PostsController(PostsService postsService) {
+    public PostsController(PostsService postsService, MediaService postService) {
         this.postsService = postsService;
+        this.postService = postService;
     }
 
     @CheckLogin
@@ -41,6 +41,7 @@ public class PostsController {
         Posts newPost = postsService.createPosts(postDto);
         return new ResponseEntity<>(newPost, HttpStatus.CREATED);
     }
+
     @CheckLogin
     @PutMapping("/{postId}")
     public ResponseEntity<String> updatePost(@PathVariable("postId") UUID postId, @RequestBody PostsDto updatedPost) {
@@ -122,11 +123,11 @@ public class PostsController {
     }
 
     @CheckLogin
-    @PostMapping(value = "/upload/{filePath}", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> uploadPostVideo(@RequestParam("filePath") MultipartFile filePath) {
+    @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<String> uploadPost(@RequestParam("filePath") MultipartFile filePath) {
         try {
-            postService.uploadMedia(filePath);
-            return ResponseEntity.ok("File uploaded successfully!");
+            String mediaId = postService.uploadMedia(filePath);
+            return ResponseEntity.ok(mediaId);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error uploading file: " + e.getMessage());

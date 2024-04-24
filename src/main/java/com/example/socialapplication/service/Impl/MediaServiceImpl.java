@@ -37,7 +37,7 @@ public class MediaServiceImpl implements MediaService {
     }
 
     @Override
-    public void uploadMedia(MultipartFile filePath) throws Exception {
+    public String uploadMedia(MultipartFile filePath) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
@@ -60,13 +60,18 @@ public class MediaServiceImpl implements MediaService {
                 );
 
                 Medias medias = new Medias();
-                medias.setId(UUID.randomUUID().toString());
+                String mediaId = UUID.randomUUID().toString();
+                medias.setId(mediaId);
                 medias.setBaseName(filePath.getOriginalFilename());
-                medias.setPublicUrl(objectName);
+                String setBaseName = bucketName + "/" + objectName;
+                medias.setPublicUrl(setBaseName);
 
                 mediaRepository.save(medias);
 
                 logger.info("File {} uploaded successfully to MinIO for user {}", originalFileName, currentUsername);
+
+                // Trả về ID của media
+                return mediaId;
             }
         } catch (Exception e) {
             logger.error("Error uploading file to MinIO", e);

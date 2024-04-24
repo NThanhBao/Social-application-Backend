@@ -57,27 +57,27 @@ public class PostsServiceImpl implements PostsService {
         post.setUserId(currentUser);
         post.setCreateAt(new Timestamp(System.currentTimeMillis()));
 
-        Posts createdPost = postsRepository.save(post);
-        logger.info("New post created with ID: {}", createdPost.getId());
-
-        List<String> mediasIdStrings = postDto.getMediasId();
+        // Thêm media vào danh sách của bài viết
         List<Medias> medias = new ArrayList<>();
-        for (String mediaId : mediasIdStrings) {
+        for (String mediaId : postDto.getMediasId()) {
             Optional<Medias> mediaOptional = mediaRepository.findById(mediaId);
             if (mediaOptional.isPresent()) {
                 Medias media = mediaOptional.get();
-                media.setPostsId(createdPost);
+                // Cập nhật trường postsId của media
+                media.setPostsId(post);
                 medias.add(media);
             }
         }
+        post.setMedias(medias);
 
-        createdPost.setMedias(medias);
-        postsRepository.save(createdPost);
+        Posts createdPost = postsRepository.save(post);
+        logger.info("New post created with ID: {}", createdPost.getId());
 
         logger.info("Post creation process completed successfully");
 
         return createdPost;
     }
+
 
     @Override
     public void updatePost(UUID postId, PostsDto updatedPost) {

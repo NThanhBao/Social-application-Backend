@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -25,6 +28,14 @@ public class Medias {
 
     @Column(name = "public_url")
     private String publicUrl;
+
+    @Column(name = "created_at")
+    private Timestamp createAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createAt = new Timestamp(new Date().getTime());
+    }
 
     @ManyToOne
     @JsonBackReference
