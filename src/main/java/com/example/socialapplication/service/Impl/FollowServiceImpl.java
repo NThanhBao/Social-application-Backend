@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -152,4 +153,17 @@ public class FollowServiceImpl implements FollowService {
         return dto;
     }
 
+    @Override
+    public Page<UsersInfoDto> getUnfollowedUsers(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        logger.info("Đang lấy danh sách người dùng chưa theo dõi của '{}'", currentUsername);
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String currentUserId = currentUser.getId();
+        Page<Users> users = usersRepository.findUnfollowedUsersByUserId(currentUserId, pageable);
+
+        logger.info("Danh sách người dùng chưa theo dõi của '{}' đã được lấy", currentUsername);
+        return users.map(this::usersInfoDto);
+    }
 }

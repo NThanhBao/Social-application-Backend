@@ -7,11 +7,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 public interface AvatarService {
+
     void uploadAvatar(MultipartFile filePath) throws Exception;
+
     void deleteAvatar(String objectName) throws IOException, InvalidKeyException, NoSuchAlgorithmException;
-
-
-
-
 
 }

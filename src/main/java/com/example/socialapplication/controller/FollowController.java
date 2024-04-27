@@ -20,7 +20,6 @@ public class FollowController {
 
     private final FollowService followService;
 
-
     public FollowController(FollowService followService) {
         this.followService = followService;
     }
@@ -31,11 +30,13 @@ public class FollowController {
         followService.followUser(followingUserId);
         return new ResponseEntity<>("User followed successfully", HttpStatus.OK);
     }
+
     @CheckLogin
     @GetMapping("/followingCount")
     public int getFollowingCount() {
         return followService.getFollowingCount();
     }
+
     @CheckLogin
     @GetMapping("/followerCount")
     public int getFollowerCount() {
@@ -51,6 +52,7 @@ public class FollowController {
     public int getFollowerCount(@PathVariable String username) {
         return followService.getFollowerCount(username);
     }
+
     @CheckLogin
     @GetMapping("/ListUsers/following")
     public ResponseEntity<List<UsersInfoDto>> getFollowingUsers(
@@ -103,4 +105,28 @@ public class FollowController {
         followService.unfollowUser(followingUserId);
         return new ResponseEntity<>("User unfollowed successfully", HttpStatus.OK);
     }
+
+    @CheckLogin
+    @GetMapping("/ListUsers/unfollowed")
+    public ResponseEntity<List<UsersInfoDto>> getUnfollowedUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue =  "createAt") String sortName,
+            @RequestParam(defaultValue = "DESC") String sortType) {
+
+        Sort.Direction direction;
+
+        if (sortType.equalsIgnoreCase("ASC")) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+
+        Page<UsersInfoDto> followingUsers =
+                followService.getUnfollowedUsers(pageable);
+        return ResponseEntity.ok(followingUsers.getContent());
+    }
+
 }

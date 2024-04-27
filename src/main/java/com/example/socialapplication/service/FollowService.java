@@ -5,9 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FollowService {
+
     void followUser(String followingUserId);
+
     int getFollowingCount();
+
     int getFollowerCount();
+
     void unfollowUser(String followingUserId);
 
     int getFollowingCount(String username);
@@ -15,5 +19,8 @@ public interface FollowService {
     int getFollowerCount(String username);
 
     Page<UsersInfoDto> getFollowingListUsers(Pageable pageable);
+
     Page<UsersInfoDto> getFollowerListUsers(Pageable pageable);
+
+    Page<UsersInfoDto> getUnfollowedUsers(Pageable pageable);
 }
