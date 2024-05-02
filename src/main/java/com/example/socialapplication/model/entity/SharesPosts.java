@@ -11,8 +11,9 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "saved_posts")
-public class SavedPost {
+@Table(name = "shares")
+public class SharesPosts {
+
 
     @Id
     @Column(length = 36)
@@ -30,7 +31,7 @@ public class SavedPost {
     @Column(name = "created_at")
     private Timestamp createAt;
 
-    public SavedPost() {
+    public SharesPosts() {
         this.id = UUID.randomUUID().toString();
     }
 

@@ -26,7 +26,7 @@ public class AvatarController {
 
     @CheckLogin
     @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
         try {
             avatarService.uploadAvatar(file);
             return ResponseEntity.ok("File uploaded successfully!");
@@ -36,7 +36,7 @@ public class AvatarController {
     }
     @CheckLogin
     @DeleteMapping("/delete")
-    public ResponseEntity<String> deleteAvt(@RequestParam("objectName") String objectName) {
+    public ResponseEntity<String> deleteAvatar(@RequestParam("objectName") String objectName) {
         try {
             avatarService.deleteAvatar(objectName);
             return ResponseEntity.ok("File deleted successfully!");
