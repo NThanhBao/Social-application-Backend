@@ -13,6 +13,8 @@ import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import com.github.benmanes.caffeine.cache.Cache;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -33,6 +35,7 @@ public class ReactionsServiceImpl implements ReactionsService {
     private final Cache<String, List<Reactions>> myCache;
     private final PostsRepository postsRepository;
     private final CommentsRepository commentsRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CommentsServiceImpl.class);
 
     public ReactionsServiceImpl(ReactionsRepository reactionsRepository, UsersRepository usersRepository, Cache<String, List<Reactions>> myCache, PostsRepository postsRepository, CommentsRepository commentsRepository) {
         this.reactionsRepository = reactionsRepository;
@@ -144,6 +147,7 @@ public class ReactionsServiceImpl implements ReactionsService {
             reactions = reactionsRepository.findByObjectId(object_id);
             myCache.put(cacheKey, reactions);
         }
+        logger.error("LLấy thành công số lượng cảm xúc của bài viết: {}", object_id);
         return reactions.size();
     }
 
@@ -157,6 +161,7 @@ public class ReactionsServiceImpl implements ReactionsService {
             reactions = reactionsRepository.findByObjectIdAndType(object_id, type);
             myCache.put(cacheKey, reactions);
         }
+        logger.error("Lấy thành công số lượng tương tác theo cảm xúc: {}", type);
         return reactions.size();
     }
 
@@ -194,6 +199,7 @@ public class ReactionsServiceImpl implements ReactionsService {
             int start = (int) pageable.getOffset();
             int end = Math.min((start + pageable.getPageSize()), usersDTOList.size());
             List<UsersInfoDto> pagedUsersDTOList = usersDTOList.subList(start, end);
+            logger.error("Lấy thành công danh sách user theo cảm xúc: {}", type);
             return new PageImpl<>(pagedUsersDTOList, pageable, usersDTOList.size());
         } else {
             throw new IllegalArgumentException("Không tìm thấy cảm xúc cho loại: " + type + " và ID: " + objectId);
@@ -233,6 +239,7 @@ public class ReactionsServiceImpl implements ReactionsService {
 
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), usersDTOList.size());
+        logger.error("lấy thành công danh sách user");
         return new PageImpl<>(usersDTOList.subList(start, end), pageable, usersDTOList.size());
         } else {
             throw new IllegalArgumentException("Không tìm thấy!");

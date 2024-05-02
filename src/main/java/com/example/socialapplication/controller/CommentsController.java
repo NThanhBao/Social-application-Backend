@@ -17,8 +17,11 @@ import java.util.UUID;
 @RequestMapping("/comments")
 public class CommentsController {
 
-    @Autowired
-    private CommentsService commentsService;
+    private final CommentsService commentsService;
+
+    public CommentsController(CommentsService commentsService) {
+        this.commentsService = commentsService;
+    }
 
     @PostMapping("/create")
     public Comments addComment(@RequestParam String postId, @RequestParam String content) {

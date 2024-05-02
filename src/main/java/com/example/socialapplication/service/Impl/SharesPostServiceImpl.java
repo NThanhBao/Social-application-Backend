@@ -9,6 +9,8 @@ import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.SharesPostService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import com.example.socialapplication.util.exception.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class SharesPostServiceImpl implements SharesPostService {
     private final SharesPostsRepository sharesPostsRepository;
     private final UsersRepository usersRepository;
     private final PostsRepository postsRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CommentsServiceImpl.class);
 
     public SharesPostServiceImpl(SharesPostsRepository sharesPostsRepository, UsersRepository usersRepository, PostsRepository postsRepository) {
         this.sharesPostsRepository = sharesPostsRepository;
@@ -47,7 +50,7 @@ public class SharesPostServiceImpl implements SharesPostService {
         SharesPosts sharesPosts = new SharesPosts();
         sharesPosts.setPostId(post);
         sharesPosts.setCreateBy(currentUser);
-
+        logger.info("Chia sẻ thành công bài viết.");
         sharesPostsRepository.save(sharesPosts);
     }
 
@@ -68,6 +71,7 @@ public class SharesPostServiceImpl implements SharesPostService {
         }
 
         SharesPosts sharesPosts = optionalSavedPost.get();
+        logger.info("Xóa thành công bài viết đã Chia sẻ.");
         sharesPostsRepository.delete(sharesPosts);
     }
 
@@ -77,6 +81,7 @@ public class SharesPostServiceImpl implements SharesPostService {
         if (currentUser == null) {
             throw new NotFoundException("Không tìm thấy người dùng!");
         }
+        logger.info("Lấy thành công bài viết cho user đã đăng nhập.");
         return sharesPostsRepository.findByCreateBy(currentUser);
     }
 
@@ -86,6 +91,7 @@ public class SharesPostServiceImpl implements SharesPostService {
         if (user == null) {
             throw new NotFoundException("Không tìm thấy người dùng!");
         }
+        logger.error("lấy thành công cho user có id: {}", userId);
         return sharesPostsRepository.findByCreateBy(user);
     }
 }

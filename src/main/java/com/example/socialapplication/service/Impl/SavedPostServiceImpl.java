@@ -9,6 +9,8 @@ import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.SavedPostService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import com.example.socialapplication.util.exception.UnauthorizedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,8 @@ public class SavedPostServiceImpl implements SavedPostService {
     private final SavedPostRepository savedPostRepository;
     private final UsersRepository usersRepository;
     private final PostsRepository postsRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CommentsServiceImpl.class);
+
 
     public SavedPostServiceImpl(SavedPostRepository savedPostRepository, UsersRepository usersRepository, PostsRepository postsRepository) {
         this.savedPostRepository = savedPostRepository;
@@ -46,8 +50,9 @@ public class SavedPostServiceImpl implements SavedPostService {
         SavedPost savedPost = new SavedPost();
         savedPost.setPostId(post);
         savedPost.setCreateBy(currentUser);
-
+        logger.info("Lưu thành công bài viết.");
         return savedPostRepository.save(savedPost);
+
     }
 
     @Override
@@ -67,6 +72,7 @@ public class SavedPostServiceImpl implements SavedPostService {
         }
 
         SavedPost savedPost = optionalSavedPost.get();
+        logger.info("Xóa thành công bài viết.");
         savedPostRepository.delete(savedPost);
     }
 
@@ -76,6 +82,7 @@ public class SavedPostServiceImpl implements SavedPostService {
         if (currentUser == null) {
             throw new NotFoundException("Không tìm thấy người dùng!");
         }
+        logger.info("Bài viết đã được lấy cho user đăng nhập.");
         return savedPostRepository.findByCreateBy(currentUser);
     }
     @Override
@@ -84,6 +91,7 @@ public class SavedPostServiceImpl implements SavedPostService {
         if (user == null) {
             throw new NotFoundException("Không tìm thấy người dùng!");
         }
+        logger.error("lấy thành công cho user có id: {}", userId);
         return savedPostRepository.findByCreateBy(user);
     }
 

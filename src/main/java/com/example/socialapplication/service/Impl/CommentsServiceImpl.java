@@ -8,10 +8,10 @@ import com.example.socialapplication.repositories.CommentsRepository;
 import com.example.socialapplication.repositories.PostsRepository;
 import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.CommentsService;
-import com.example.socialapplication.service.PostsService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import com.example.socialapplication.util.exception.UnauthorizedException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -24,14 +24,17 @@ import java.util.UUID;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
-    @Autowired
-    private UsersRepository usersRepository;
-    @Autowired
-    private CommentsRepository commentsRepository;
-    @Autowired
-    private PostsRepository postsRepository;
-    @Autowired
-    private PostsService postsService;
+    private final UsersRepository usersRepository;
+    private final CommentsRepository commentsRepository;
+    private final PostsRepository postsRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CommentsServiceImpl.class);
+
+    public CommentsServiceImpl(UsersRepository usersRepository, CommentsRepository commentsRepository, PostsRepository postsRepository) {
+        this.usersRepository = usersRepository;
+        this.commentsRepository = commentsRepository;
+        this.postsRepository = postsRepository;
+    }
+
     @Override
     public Comments saveComment(CommentsDto commentsDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -59,6 +62,7 @@ public class CommentsServiceImpl implements CommentsService {
         comments.setPostId(post.get());
         comments.setCreateAt(new Timestamp(System.currentTimeMillis()));
         postsRepository.save(posts);
+        logger.info("Thêm thành công comment.");
         return commentsRepository.save(comments);
     }
 
@@ -92,6 +96,7 @@ public class CommentsServiceImpl implements CommentsService {
         posts.setTotalComment(posts.getTotalComment() - 1);
 
         postsRepository.save(posts);
+        logger.info("Xóa thành công comment.");
         commentsRepository.deleteById(commentId.toString());
     }
 
@@ -120,6 +125,7 @@ public class CommentsServiceImpl implements CommentsService {
 
         comment.setContent(commentsDto.getContent());
         commentsDto.setCreateAt(new Timestamp(System.currentTimeMillis()));
+        logger.info("Sửa thành công comment.");
         commentsRepository.save(comment);
     }
 }
