@@ -10,21 +10,23 @@ import java.util.UUID;
 @Table(name = "reactions")
 public class Reactions {
     @Id
-    private String id;
+    @Column(name = "id", columnDefinition = "CHAR(36)")
+    private String reactionsId;
 
     @Column(name = "object_type")
     private String objectType;
 
-    @Column(name = "object_id")
+    @Column(name = "object_id", columnDefinition = "CHAR(36)")
     private String objectId;
 
-    private int type;
-
-    public Reactions() {
-        this.id = UUID.randomUUID().toString();
-    }
+    private String type;
 
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private Users usersId;
+    private Users createdBy;
+
+    // Phương thức setter cho createdBy
+    public void setCreatedBy(Users createdBy) {
+        this.createdBy = createdBy;
+    }
 }

@@ -78,3 +78,25 @@ CREATE TABLE follows (
                     FOREIGN KEY (following_user_id) REFERENCES users(id),
                     FOREIGN KEY (user_id) REFERENCES users(id),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+
+DROP TABLE IF EXISTS shares;
+CREATE TABLE shares (
+                        id CHAR(36) PRIMARY KEY,
+                        post_id CHAR(36) NOT NULL,
+                        user_id CHAR(36) NOT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        FOREIGN KEY (post_id) REFERENCES posts(id),
+                        FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+
+DROP TABLE IF EXISTS saved_posts;
+CREATE TABLE saved_posts (
+                             id CHAR(36) PRIMARY KEY,
+                             post_id CHAR(36) NOT NULL,
+                             user_id CHAR(36) NOT NULL,
+                             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                             FOREIGN KEY (post_id) REFERENCES posts(id),
+                             FOREIGN KEY (user_id) REFERENCES users(id)
+);
