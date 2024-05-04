@@ -23,7 +23,6 @@ public class SharesPosts {
     @JoinColumn(name = "post_id")
     private Posts postId;
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Users createBy;

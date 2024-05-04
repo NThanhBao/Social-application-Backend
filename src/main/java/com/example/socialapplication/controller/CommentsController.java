@@ -3,11 +3,12 @@ package com.example.socialapplication.controller;
 import com.example.socialapplication.model.dto.CommentsDto;
 import com.example.socialapplication.model.entity.Comments;
 import com.example.socialapplication.service.CommentsService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.socialapplication.util.annotation.CheckLogin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +24,7 @@ public class CommentsController {
         this.commentsService = commentsService;
     }
 
+    @CheckLogin
     @PostMapping("/create")
     public Comments addComment(@RequestParam String postId, @RequestParam String content) {
         CommentsDto comment = new CommentsDto();
@@ -38,19 +40,14 @@ public class CommentsController {
                                                               @RequestParam(defaultValue = "10") int pageSize,
                                                               @RequestParam(defaultValue = "createAt") String sortName,
                                                               @RequestParam(defaultValue = "DESC") String sortType) {
-        // Tạo một biến Sort.Direction để lưu hướng sắp xếp
-        Sort.Direction direction;
-
-        // Kiểm tra giá trị của sortType
-        if (sortType.equalsIgnoreCase("ASC")) {
-            direction = Sort.Direction.ASC;
-        } else {
-            direction = Sort.Direction.DESC;
+        try {
+            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<Comments> commentsPage = commentsService.getCommentsByPostId(postId, pageable);
+            return   ResponseEntity.ok().body(commentsPage);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
-
-        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
-        Page<Comments> commentsPage = commentsService.getCommentsByPostId(postId, pageable);
-        return ResponseEntity.ok(commentsPage);
     }
 
 

@@ -1,5 +1,6 @@
 package com.example.socialapplication.service.Impl;
 
+import com.example.socialapplication.model.dto.SharesPostDto;
 import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.SharesPosts;
 import com.example.socialapplication.model.entity.Users;
@@ -15,6 +16,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,13 +34,10 @@ public class SharesPostServiceImpl implements SharesPostService {
         this.postsRepository = postsRepository;
     }
 
-
     @Override
-    public void createdSharePost(String postId, String currentUsername) {
-        Users currentUser = usersRepository.findByUsername(currentUsername);
-        if (currentUser == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
-        }
+    public SharesPosts createdSharePost(SharesPostDto sharesPostDto) {
+        String postId = sharesPostDto.getPostId();
+        String currentUsername = sharesPostDto.getCreateBy();
 
         Optional<Posts> optionalPost = postsRepository.findById(postId);
         if (optionalPost.isEmpty()) {
@@ -46,13 +45,24 @@ public class SharesPostServiceImpl implements SharesPostService {
         }
 
         Posts post = optionalPost.get();
+        post.setTotalShare(post.getTotalShare() + 1);
+        postsRepository.save(post);
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        if (currentUser == null) {
+            throw new NotFoundException("Không tìm thấy người dùng!");
+        }
 
         SharesPosts sharesPosts = new SharesPosts();
-        sharesPosts.setPostId(post);
         sharesPosts.setCreateBy(currentUser);
-        logger.info("Chia sẻ thành công bài viết.");
-        sharesPostsRepository.save(sharesPosts);
+        sharesPosts.setPostId(post);
+        sharesPosts.setCreateAt(new Timestamp(System.currentTimeMillis()));
+
+        logger.info("Share thành công bài viết với ID: {}", postId);
+        return sharesPostsRepository.save(sharesPosts);
     }
+
+
 
     @Override
     public void deleteSharedPost(String sharesPostId, String currentUsername) {

@@ -54,6 +54,7 @@ public class PostsServiceImpl implements PostsService {
         post.setStatus(postDto.getStatus());
         post.setTotalLike(0);
         post.setTotalComment(0);
+        post.setTotalShare(0);
         post.setUserId(currentUser);
         post.setCreateAt(new Timestamp(System.currentTimeMillis()));
 

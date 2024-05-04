@@ -1,5 +1,6 @@
 package com.example.socialapplication.controller;
 
+import com.example.socialapplication.model.dto.SharesPostDto;
 import com.example.socialapplication.model.entity.SharesPosts;
 import com.example.socialapplication.service.SharesPostService;
 import com.example.socialapplication.util.annotation.CheckLogin;
@@ -15,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/shares-posts")
+@RequestMapping("/shares")
 public class SharesPostsController {
 
     private final SharesPostService sharesPostService;
@@ -25,12 +26,16 @@ public class SharesPostsController {
     }
 
     @CheckLogin
-    @PostMapping("/{postId}")
+    @PostMapping("/post/{postId}")
     public ResponseEntity<String> createSharePost(@PathVariable String postId, Authentication authentication) {
         String currentUsername = authentication.getName();
-        sharesPostService.createdSharePost(postId, currentUsername);
-        return ResponseEntity.ok("Bài đăng đã được chia sẻ thành công.");
+        SharesPostDto sharesPostDto = new SharesPostDto();
+        sharesPostDto.setPostId(postId);
+        sharesPostDto.setCreateBy(currentUsername);
+        SharesPosts createdSharesPost = sharesPostService.createdSharePost(sharesPostDto);
+        return ResponseEntity.ok("Bài viết đã được chia sẻ thành công.");
     }
+
 
     @CheckLogin
     @DeleteMapping("/{sharesPostId}")

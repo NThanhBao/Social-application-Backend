@@ -35,6 +35,9 @@ public class Posts {
     @Column(name = "total_comment")
     private int totalComment;
 
+    @Column(name = "total_share")
+    private int totalShare;
+
     @ManyToOne
     @JoinColumn(name = "created_by")
     private Users userId;
