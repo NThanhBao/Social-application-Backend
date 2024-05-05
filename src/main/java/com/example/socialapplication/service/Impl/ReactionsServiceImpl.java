@@ -12,6 +12,7 @@ import com.example.socialapplication.repositories.ReactionsRepository;
 import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.exception.NotFoundException;
+import com.example.socialapplication.util.exception.UnauthorizedException;
 import com.github.benmanes.caffeine.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,27 +91,77 @@ public class ReactionsServiceImpl implements ReactionsService {
         }
     }
 
+//    @Override
+//    public void deleteReactions(String reactionId) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        String currentUsername = auth.getName();
+//        Users currentUser = usersRepository.findByUsername(currentUsername);
+//
+//        if (currentUser != null) {
+//            Optional<Reactions> reactionOptional = reactionsRepository.findById(reactionId);
+//            if (reactionOptional.isPresent()) {
+//                Reactions reaction = reactionOptional.get();
+//                if (reaction.getCreatedBy().equals(currentUser)) {
+//                    reactionsRepository.delete(reaction);
+//                } else {
+//                    throw new IllegalArgumentException("Bạn không thể xóa reactions của người khác.");
+//                }
+//            } else {
+//                throw new IllegalArgumentException("Không tìm thấy ID reactions.");
+//            }
+//        } else {
+//            throw new IllegalStateException("Không thể xác định người dùng hiện tại.");
+//        }
+//    }
+
     @Override
     public void deleteReaction(String reactionId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null ) {
+            throw new NotFoundException("Bạn cần đăng nhập để thực hiện hành động này!");
+        }
+
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
-
-        if (currentUser != null) {
-            Optional<Reactions> reactionOptional = reactionsRepository.findById(reactionId);
-            if (reactionOptional.isPresent()) {
-                Reactions reaction = reactionOptional.get();
-                if (reaction.getCreatedBy().equals(currentUser)) {
-                    reactionsRepository.delete(reaction);
-                } else {
-                    throw new IllegalArgumentException("Bạn không thể xóa reactions của người khác.");
-                }
-            } else {
-                throw new IllegalArgumentException("Không tìm thấy ID reactions.");
-            }
-        } else {
-            throw new IllegalStateException("Không thể xác định người dùng hiện tại.");
+        if (currentUser == null) {
+            throw new NotFoundException("Không tìm thấy người dùng!");
         }
+
+        Optional<Reactions> reactionOptional = reactionsRepository.findById(reactionId);
+        if (reactionOptional.isEmpty()){
+            throw new NotFoundException("Không tìm thấy phản ứng cần xóa!");
+        }
+        Reactions reaction = reactionOptional.get();
+        if (!reaction.getCreatedBy().getId().equals(currentUser.getId())) {
+            throw new UnauthorizedException("Bạn không có quyền xóa phản ứng này!");
+        }
+
+        String objectId = reaction.getObjectId();
+        String objectType = reaction.getObjectType();
+
+        if ("Posts".equals(objectType)) {
+            Optional<Posts> postOptional = postsRepository.findById(objectId);
+            if (postOptional.isEmpty()) {
+                throw new NotFoundException("Không tìm thấy bài viết!");
+            }
+            Posts post = postOptional.get();
+            post.setTotalLike(post.getTotalLike() - 1);
+            postsRepository.save(post);
+            logger.info("Xóa thành công cảm xúc cho post .");
+        } else if ("Comments".equals(objectType)) {
+            Optional<Comments> commentsOptional = commentsRepository.findById(objectId);
+            if (commentsOptional.isEmpty()) {
+                throw new NotFoundException("Không tìm thấy comment !");
+            }
+            Comments post = commentsOptional.get();
+            post.setTotalLike(post.getTotalLike() - 1);
+            commentsRepository.save(post);
+            logger.info("Xóa thành công cảm xúc cho comment .");
+        } else {
+            throw new RuntimeException();
+        }
+        reactionsRepository.deleteById(reactionId);
+        logger.info("Xóa thành công phản ứng.");
     }
 
     @Override

@@ -43,7 +43,6 @@ CREATE TABLE favorites (
                            post_id CHAR(36),
                            user_id CHAR(36),
                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                           PRIMARY KEY (post_id),
                            FOREIGN KEY (post_id) REFERENCES posts(id),
                            FOREIGN KEY (user_id) REFERENCES users(id)
 );
