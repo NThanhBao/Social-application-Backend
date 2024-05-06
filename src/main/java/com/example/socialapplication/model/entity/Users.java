@@ -2,6 +2,7 @@ package com.example.socialapplication.model.entity;
 
 import com.example.socialapplication.model.entity.Enum.EnableType;
 import com.example.socialapplication.model.entity.Enum.RoleType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
@@ -15,7 +16,6 @@ import java.util.*;
 @Setter
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-
 @Table(name = "users")
 public class Users {
     @Id
@@ -43,7 +43,6 @@ public class Users {
     private String phoneNumber;
 
     @Column(name = "date_of_birth")
-
     private Timestamp dateOfBirth;
 
     @Column(name = "mail")
@@ -74,6 +73,7 @@ public class Users {
     @Column(name = "updated_at")
     private Timestamp updateAt;
 
+    @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "follows",
@@ -82,6 +82,15 @@ public class Users {
     )
     private List<Users> followingUser = new ArrayList<>();
 
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "favorites",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id")
+    )
+    private List<Posts> favoritesPost;
+
     @PrePersist
     protected void onCreate() {
         createAt = new Timestamp(new Date().getTime());
@@ -89,7 +98,27 @@ public class Users {
 
     @PreUpdate
     protected void onUpdate() {
-        updateAt = new Timestamp(new Date().getTime());
+        updateAt = new Timestamp(System.currentTimeMillis());
+    }
+
+    @Override
+    public String toString() {
+        return "Users{" +
+                "id='" + id + '\'' +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", gender=" + gender +
+                ", phoneNumber='" + phoneNumber + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", mail='" + mail + '\'' +
+                ", address='" + address + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", roleType=" + roleType +
+                ", enableType=" + enableType +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
+                '}';
     }
 }
-

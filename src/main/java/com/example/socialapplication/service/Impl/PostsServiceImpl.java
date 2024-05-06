@@ -40,7 +40,7 @@ public class PostsServiceImpl implements PostsService {
         logger.info("Current username: {}", currentUsername);
 
         Users currentUser = usersRepository.findByUsername(currentUsername);
-        String userId = currentUser != null ? currentUser.getId().toString() : null;
+        String userId = currentUser != null ? currentUser.getId() : null;
         logger.info("Current user ID: {}", userId);
 
         if (currentUser == null) {

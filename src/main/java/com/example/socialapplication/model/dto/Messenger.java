@@ -1,6 +1,5 @@
 package com.example.socialapplication.model.dto;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
@@ -9,5 +8,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class Messenger {
+
    private String messenger ;
+
 }

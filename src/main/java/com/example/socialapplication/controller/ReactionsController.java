@@ -2,7 +2,6 @@ package com.example.socialapplication.controller;
 
 import com.example.socialapplication.model.dto.ReactionsDto;
 import com.example.socialapplication.model.dto.UsersInfoDto;
-import com.example.socialapplication.model.entity.Users;
 import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.annotation.CheckLogin;
 import org.springframework.data.domain.Page;

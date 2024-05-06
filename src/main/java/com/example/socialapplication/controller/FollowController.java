@@ -111,8 +111,8 @@ public class FollowController {
     public ResponseEntity<List<UsersInfoDto>> getUnfollowedUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "5") int pageSize,
-            @RequestParam(defaultValue =  "createAt") String sortName,
-            @RequestParam(defaultValue = "DESC") String sortType) {
+            @RequestParam(defaultValue = "createAt") String sortName,
+            @RequestParam(defaultValue = "ASC") String sortType) {
 
         Sort.Direction direction;
 

@@ -6,5 +6,5 @@ import com.example.socialapplication.model.entity.Message;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
-    // Bạn có thể thêm các phương thức tùy chỉnh khác ở đây nếu cần
+
 }

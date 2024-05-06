@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OTP_ResetPasswordRepository extends JpaRepository<OTP_ResetPassword, Long> {
+
     OTP_ResetPassword findByMailAndOtp(String mail, String otp);
-    OTP_ResetPassword findFirstByMailAndUsedOrderByExpirationTimeAsc(String mail, boolean used);
 
 }

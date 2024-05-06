@@ -3,11 +3,14 @@ package com.example.socialapplication.model.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Getter
 @Setter
-public class PostsDto {
+public class FavoritesDto {
+
+    private String postsID;
 
     private String title;
 
@@ -15,7 +18,14 @@ public class PostsDto {
 
     private String status;
 
+    private String totalLike;
+
     private List<String> mediasId;
 
+    private String totalComment;
+
+    private String userID;
+
+    private Timestamp createAt;
 
 }

@@ -14,7 +14,6 @@ import java.util.UUID;
 @Table(name = "shares")
 public class SharesPosts {
 
-
     @Id
     @Column(length = 36)
     private String id;

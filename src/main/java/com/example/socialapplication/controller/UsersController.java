@@ -89,12 +89,6 @@ public class UsersController {
         return registerService.addUser(registerDTO);
     }
 
-//    @CheckLogin
-//    @GetMapping("/checktoken")
-//    public ResponseEntity<String> protectedApi(HttpServletRequest request) {
-//        return ResponseEntity.ok("chỉ khi JWT đúng thì mới xem được thông tin này");
-//    }
-
     @GetMapping
     public ResponseEntity<List<Users>> getAllUsers() {
         List<Users> users = userService.getAllUsers();

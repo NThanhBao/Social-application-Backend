@@ -1,6 +1,5 @@
 package com.example.socialapplication.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Service;
@@ -8,8 +7,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class ChatWebSocketService {
 
-    @Autowired
-    private SimpMessageSendingOperations messagingTemplate;
+    private final SimpMessageSendingOperations messagingTemplate;
+
+    public ChatWebSocketService(SimpMessageSendingOperations messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
+    }
 
     public void sendChatMessage(String username, String message) {
         messagingTemplate.convertAndSend("/topic/public", username + ": " + message);

@@ -8,7 +8,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class SharesPostDto {
+
     private String postId;
+
     private String createBy;
+
     private Timestamp createAt;
+
 }

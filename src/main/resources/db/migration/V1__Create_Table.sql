@@ -19,9 +19,9 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS `posts`;
 CREATE TABLE posts (
                     id CHAR(36) PRIMARY KEY,
-                    title VARCHAR(255) NOT NULL,
-                    body TEXT NOT NULL ,
-                    status VARCHAR(255) NOT NULL ,
+                    title VARCHAR(255) NULL,
+                    body TEXT NULL ,
+                    status VARCHAR(255) NULL ,
                     total_like INT NOT NULL ,
                     total_comment INT NOT NULL ,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

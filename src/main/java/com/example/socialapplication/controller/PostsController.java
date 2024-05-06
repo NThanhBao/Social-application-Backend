@@ -92,7 +92,7 @@ public class PostsController {
     @GetMapping("/allList")
     public ResponseEntity<List<Posts>> getAllPosts(@RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int pageSize,
-                                                   @RequestParam(defaultValue = "createAt") String sortName,
+                                                   @RequestParam(defaultValue = "totalShare") String sortName,
                                                    @RequestParam(defaultValue = "DESC") String sortType
     ) {
         try {
@@ -162,7 +162,7 @@ public class PostsController {
     public ResponseEntity<List<Posts>> getListOfPostsByLoggedInUser(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int pageSize,
-            @RequestParam(defaultValue = "createAt") String sortName,
+            @RequestParam(defaultValue = "totalShare") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType
     ) {
         try {

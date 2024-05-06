@@ -7,5 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface SharesPostsRepository extends JpaRepository<SharesPosts, String> {
+
     List<SharesPosts> findByCreateBy(Users createdBy);
+
 }

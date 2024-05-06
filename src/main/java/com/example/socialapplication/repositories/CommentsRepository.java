@@ -10,7 +10,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommentsRepository extends JpaRepository<Comments, String> {
+
     @Query("SELECT c FROM Comments c WHERE c.postId.id = :postId")
+
     Page<Comments> findByPostId(@Param("postId") String postId, Pageable pageable);
+
 }
 

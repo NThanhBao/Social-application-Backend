@@ -91,29 +91,6 @@ public class ReactionsServiceImpl implements ReactionsService {
         }
     }
 
-//    @Override
-//    public void deleteReactions(String reactionId) {
-//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-//        String currentUsername = auth.getName();
-//        Users currentUser = usersRepository.findByUsername(currentUsername);
-//
-//        if (currentUser != null) {
-//            Optional<Reactions> reactionOptional = reactionsRepository.findById(reactionId);
-//            if (reactionOptional.isPresent()) {
-//                Reactions reaction = reactionOptional.get();
-//                if (reaction.getCreatedBy().equals(currentUser)) {
-//                    reactionsRepository.delete(reaction);
-//                } else {
-//                    throw new IllegalArgumentException("Bạn không thể xóa reactions của người khác.");
-//                }
-//            } else {
-//                throw new IllegalArgumentException("Không tìm thấy ID reactions.");
-//            }
-//        } else {
-//            throw new IllegalStateException("Không thể xác định người dùng hiện tại.");
-//        }
-//    }
-
     @Override
     public void deleteReaction(String reactionId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
