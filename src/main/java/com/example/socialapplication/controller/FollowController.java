@@ -128,5 +128,26 @@ public class FollowController {
                 followService.getUnfollowedUsers(pageable);
         return ResponseEntity.ok(followingUsers.getContent());
     }
+    @CheckLogin
+    @GetMapping("/ListFriends")
+    public ResponseEntity<List<UsersInfoDto>> getListFriends(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int pageSize,
+            @RequestParam(defaultValue = "createAt") String sortName,
+            @RequestParam(defaultValue = "DESC") String sortType) {
 
+        Sort.Direction direction;
+
+        if (sortType.equalsIgnoreCase("ASC")) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+
+        Page<UsersInfoDto> followerUsers =
+                followService.getListFriends(pageable);
+        return ResponseEntity.ok(followerUsers.getContent());
+    }
 }

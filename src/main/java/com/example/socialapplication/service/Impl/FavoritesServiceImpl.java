@@ -103,8 +103,21 @@ public class FavoritesServiceImpl implements FavoritesService {
         if (count == 0) {
             throw new NotFoundException("Không tìm thấy mục yêu thích!");
         }
-
         // Xóa mục yêu thích từ bảng favorites
         postsRepository.deleteFavoriteByUserIdAndPostId(currentUserId, postId);
     }
+
+    @Override
+    public boolean checkFavoriteStatus(String postId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return false;
+        }
+        String currentUsername = authentication.getName();
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String currentUserId = currentUser.getId();
+        int count = postsRepository.countFavoritesByUserIdAndPostId(currentUserId, postId);
+        return count > 0;
+    }
+
 }

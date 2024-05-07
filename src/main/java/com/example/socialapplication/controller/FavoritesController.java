@@ -45,7 +45,7 @@ public class FavoritesController {
     }
 
     @CheckLogin
-    @GetMapping("/All@posts")
+    @GetMapping("/all-posts")
     public ResponseEntity<List<FavoritesDto>> getFavoritesByToken(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int pageSize,
@@ -77,6 +77,12 @@ public class FavoritesController {
             e.printStackTrace();
             throw new NotFoundException(e.getMessage());
         }
+    }
 
+    @CheckLogin
+    @GetMapping("/check/{postId}")
+    public ResponseEntity<Boolean> checkFavoriteStatus(@PathVariable String postId) {
+        boolean isFavorite = favoritesService.checkFavoriteStatus(postId);
+        return ResponseEntity.ok().body(isFavorite);
     }
 }

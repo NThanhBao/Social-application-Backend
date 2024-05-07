@@ -97,32 +97,7 @@ public class FollowServiceImpl implements FollowService {
         usersRepository.save(currentUser);
         logger.info("Người dùng '{}' đã hủy theo dõi người dùng '{}'", currentUsername, followingUser.getUsername());
     }
-    @Override
-    public Page<UsersInfoDto> getFollowingListUsers(Pageable pageable) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        logger.info("Đang lấy danh sách người dùng đang theo dõi của '{}'", currentUsername);
 
-        Users currentUser = usersRepository.findByUsername(currentUsername);
-        String currentUserId = currentUser.getId();
-        Page<Users> users = usersRepository.findFollowingUsersByUserId(currentUserId, pageable);
-
-        logger.info("Danh sách người dùng đang theo dõi của '{}' đã được lấy", currentUsername);
-        return users.map(this::usersInfoDto);
-    }
-    @Override
-    public Page<UsersInfoDto> getFollowerListUsers(Pageable pageable) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String currentUsername = authentication.getName();
-        logger.info("Đang lấy danh sách người theo dõi của '{}'", currentUsername);
-
-        Users currentUser = usersRepository.findByUsername(currentUsername);
-        String currentUserId = currentUser.getId();
-        Page<Users> users = usersRepository.findFollowerUsersByUserId(currentUserId, pageable);
-
-        logger.info("Danh sách người theo dõi của '{}' đã được lấy", currentUsername);
-        return users.map(this::usersInfoDto);
-    }
     @Override
     public int getFollowingCount(String username) {
         logger.info("Đang lấy số người dùng đang theo dõi của '{}'", username);
@@ -163,6 +138,45 @@ public class FollowServiceImpl implements FollowService {
         Page<Users> users = usersRepository.findUnfollowedUsersByUserId(currentUserId, pageable);
 
         logger.info("Danh sách người dùng chưa theo dõi của '{}' đã được lấy", currentUsername);
+        return users.map(this::usersInfoDto);
+    }
+    @Override
+    public Page<UsersInfoDto> getFollowingListUsers(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        logger.info("Đang lấy danh sách người dùng đang theo dõi của '{}'", currentUsername);
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String currentUserId = currentUser.getId();
+        Page<Users> users = usersRepository.findFollowingUsersByUserId(currentUserId, pageable);
+
+        logger.info("Danh sách người dùng đang theo dõi của '{}' đã được lấy", currentUsername);
+        return users.map(this::usersInfoDto);
+    }
+    @Override
+    public Page<UsersInfoDto> getFollowerListUsers(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        logger.info("Đang lấy danh sách người theo dõi của '{}'", currentUsername);
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String currentUserId = currentUser.getId();
+        Page<Users> users = usersRepository.findFollowerUsersByUserId(currentUserId, pageable);
+
+        logger.info("Danh sách người theo dõi của '{}' đã được lấy", currentUsername);
+        return users.map(this::usersInfoDto);
+    }
+
+    @Override
+    public Page<UsersInfoDto> getListFriends(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+        logger.info("Đang lấy danh sách bạn bè của '{}'", currentUsername);
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String currentUserId = currentUser.getId();
+        Page<Users> users = usersRepository.findFriendByUserId(currentUserId, pageable);
+        logger.info("Danh sách bạn bè của '{}' đã được lấy", currentUsername);
         return users.map(this::usersInfoDto);
     }
 }
