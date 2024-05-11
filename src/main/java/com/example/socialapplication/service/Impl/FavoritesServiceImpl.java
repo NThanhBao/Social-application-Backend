@@ -1,6 +1,7 @@
 package com.example.socialapplication.service.Impl;
 
 import com.example.socialapplication.model.dto.FavoritesDto;
+import com.example.socialapplication.model.entity.Medias;
 import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Users;
 import com.example.socialapplication.repositories.PostsRepository;
@@ -74,16 +75,29 @@ public class FavoritesServiceImpl implements FavoritesService {
         favoritesDto.setPostsID(post.getId());
         favoritesDto.setTitle(post.getTitle());
         favoritesDto.setBody(post.getBody());
+        favoritesDto.setAvatar(post.getUserId().getAvatar());
+        favoritesDto.setFirstName(post.getUserId().getFirstName());
+        favoritesDto.setLastName(post.getUserId().getLastName());
         favoritesDto.setStatus(post.getStatus());
-        if (post.getMedias() != null && !post.getMedias().isEmpty()) {
-            favoritesDto.setMediasId(Collections.singletonList(post.getMedias().get(0).getId()));
-        }
         favoritesDto.setTotalLike(String.valueOf(post.getTotalLike()));
+        favoritesDto.setTotalShare(String.valueOf(post.getTotalShare()));
         favoritesDto.setTotalComment(String.valueOf(post.getTotalComment()));
         favoritesDto.setUserID(post.getUserId().getId());
         favoritesDto.setCreateAt(post.getCreateAt());
+
+        // Tạo danh sách chứa các publicUrl của các media
+        List<String> mediaPublicUrls = new ArrayList<>();
+        if (post.getMedias() != null) {
+            for (Medias media : post.getMedias()) {
+                mediaPublicUrls.add(media.getPublicUrl());
+            }
+        }
+        favoritesDto.setMediaPublicUrls(mediaPublicUrls);
+
         return favoritesDto;
     }
+
+
 
     @Override
     public void deleteFavorite(String postId) {

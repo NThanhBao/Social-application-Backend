@@ -29,7 +29,6 @@ public class PostsController {
     private final PostsService postsService;
     private final MediaService postService;
 
-    @Autowired
     public PostsController(PostsService postsService, MediaService postService) {
         this.postsService = postsService;
         this.postService = postService;
@@ -103,8 +102,8 @@ public class PostsController {
                 direction = Sort.Direction.DESC;
             }
             Pageable sortedByName = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
-            List<Posts> posts = postsService.getAllPosts(sortedByName);
-            return new ResponseEntity<>(posts, HttpStatus.OK);
+            Page<Posts> posts = postsService.getAllPosts(sortedByName);
+            return ResponseEntity.ok().body(posts.getContent());
         } catch ( Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -136,7 +135,7 @@ public class PostsController {
 
     @CheckLogin
     @DeleteMapping("/delete/{filePath}")
-    public ResponseEntity<String> deletePostVideos(@RequestParam("filePath") String filePath) {
+    public ResponseEntity<String> deletePostVideos(@PathVariable("filePath") String filePath) {
         try {
             postService.deletePost(filePath);
             return ResponseEntity.ok("File deleted successfully!");

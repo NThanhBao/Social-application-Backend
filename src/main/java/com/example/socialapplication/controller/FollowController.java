@@ -77,6 +77,29 @@ public class FollowController {
     }
 
     @CheckLogin
+    @GetMapping("/ListFollowing")
+    public ResponseEntity<List<UsersInfoDto>> getFollowingNavUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue =  "createAt") String sortName,
+            @RequestParam(defaultValue = "DESC") String sortType) {
+
+        Sort.Direction direction;
+
+        if (sortType.equalsIgnoreCase("ASC")) {
+            direction = Sort.Direction.ASC;
+        } else {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+
+        Page<UsersInfoDto> followingUsers =
+                followService.getFollowingListUsers(pageable);
+        return ResponseEntity.ok(followingUsers.getContent());
+    }
+
+    @CheckLogin
     @GetMapping("/ListUsers/follower")
     public ResponseEntity<List<UsersInfoDto>> getFollowerUsers(
             @RequestParam(defaultValue = "0") int page,

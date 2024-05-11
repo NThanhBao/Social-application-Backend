@@ -10,6 +10,7 @@ CREATE TABLE users (
                     date_of_birth TIMESTAMP NOT NULL,
                     mail VARCHAR(255) NOT NULL,
                     avatar VARCHAR(255) NULL,
+                    background VARCHAR(255) NULL,
                     enable BOOLEAN NOT NULL,
                     address VARCHAR(255),
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -66,7 +67,7 @@ CREATE TABLE reactions (
                         object_id CHAR(36) NOT NULL,
                         type INT NOT NULL,
                         created_by CHAR(36) NOT NULL,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                        create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                         FOREIGN KEY (created_by) REFERENCES users(id));
 
 

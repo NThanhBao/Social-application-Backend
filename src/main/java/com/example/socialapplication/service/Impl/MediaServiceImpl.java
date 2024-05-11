@@ -30,8 +30,11 @@ public class MediaServiceImpl implements MediaService {
     String bucketName = "posts";
     private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 
-    public MediaServiceImpl(MinioClient minioClient, UsersRepository usersRepository, MediaRepository mediaRepository) {
-        this.minioClient = minioClient;
+    public MediaServiceImpl(UsersRepository usersRepository, MediaRepository mediaRepository) {
+        this.minioClient = MinioClient.builder()
+                .endpoint("http://localhost:9000")
+                .credentials("root", "12345678")
+                .build();
         this.usersRepository = usersRepository;
         this.mediaRepository = mediaRepository;
     }

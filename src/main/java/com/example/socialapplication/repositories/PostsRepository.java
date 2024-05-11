@@ -12,6 +12,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Repository
 public interface PostsRepository extends JpaRepository<Posts, String> {
     Page<Posts> findByUserId(Users user, Pageable pageable);
@@ -32,4 +34,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
     @Query(value = "SELECT COUNT(*) FROM favorites WHERE user_id = :userId AND post_id = :postId", nativeQuery = true)
     int countFavoritesByUserIdAndPostId(String userId, String postId);
+
+    @Query("SELECT p.id FROM Posts p WHERE p.userId.id = :userId")
+    List<String> findPostIdsByUserId(@Param("userId") String userId);
 }

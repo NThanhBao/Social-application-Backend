@@ -120,6 +120,7 @@ public class FollowServiceImpl implements FollowService {
         dto.setFirstName(users.getFirstName());
         dto.setLastName(users.getLastName());
         dto.setAvatar(users.getAvatar());
+        dto.setBackground(users.getBackground());
         dto.setGender(users.isGender());
         dto.setPhoneNumber(users.getPhoneNumber());
         dto.setDateOfBirth(users.getDateOfBirth());

@@ -97,6 +97,7 @@ public class UsersServiceImpl implements UsersService {
         usersDto.setDateOfBirth(user.getDateOfBirth());
         usersDto.setPhoneNumber(user.getPhoneNumber());
         usersDto.setAvatar(user.getAvatar());
+        usersDto.setBackground(user.getBackground());
         return usersDto;
     }
 

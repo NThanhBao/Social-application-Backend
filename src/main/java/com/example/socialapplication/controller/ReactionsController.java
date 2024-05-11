@@ -2,8 +2,10 @@ package com.example.socialapplication.controller;
 
 import com.example.socialapplication.model.dto.ReactionsDto;
 import com.example.socialapplication.model.dto.UsersInfoDto;
+import com.example.socialapplication.model.entity.Reactions;
 import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.annotation.CheckLogin;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -29,7 +31,7 @@ public class ReactionsController {
     @PostMapping("/{object_type}/{postId}")
     public ResponseEntity<String> createReaction(@PathVariable String postId,
                                                  @PathVariable String object_type,
-                                                 @RequestParam (defaultValue = "LIKE") String  type) {
+                                                 @RequestParam (defaultValue = "LOVE") String  type) {
         ReactionsDto reactionDto = new ReactionsDto();
         reactionDto.setObjectType(object_type);
         reactionDto.setObjectId(postId);
@@ -102,7 +104,7 @@ public class ReactionsController {
     @GetMapping("/all-users")
     public ResponseEntity<List<UsersInfoDto>> getAllUsersInReactions(@RequestParam(defaultValue = "0") int page,
                                                               @RequestParam(defaultValue = "10") int pageSize,
-                                                              @RequestParam(defaultValue = "createdBy") String sortName,
+                                                              @RequestParam(defaultValue = "createBy") String sortName,
                                                               @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
@@ -117,4 +119,20 @@ public class ReactionsController {
         }
     }
 
+    @CheckLogin
+    @GetMapping("/my-posts")
+    public ResponseEntity<List<Reactions>> getAllReactionsOnCurrentUserPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int pageSize,
+            @RequestParam(defaultValue = "createAt") String sortName,
+            @RequestParam(defaultValue = "DESC") String sortType) {
+        try {
+            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<Reactions> reactionsPage = reactionsService.getAllReactionsOnCurrentUserPosts(pageable);
+            return ResponseEntity.ok().body(reactionsPage.getContent());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

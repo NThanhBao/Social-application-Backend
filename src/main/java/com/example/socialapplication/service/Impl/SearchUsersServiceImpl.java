@@ -41,6 +41,7 @@ public class SearchUsersServiceImpl implements SearchUsersService {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setAddress(user.getAddress());
         dto.setAvatar(user.getAvatar());
+        dto.setBackground(user.getBackground());
         return dto;
     }
 }

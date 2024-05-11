@@ -168,9 +168,9 @@ public class PostsServiceImpl implements PostsService {
     }
 
     @Override
-    public List<Posts> getAllPosts(Pageable pageable) {
-        List<Posts> allPosts = postsRepository.findAll();
-        logger.info("Retrieved {} posts", allPosts.size());
+    public Page<Posts> getAllPosts(Pageable pageable) {
+        Page<Posts> allPosts = postsRepository.findAll(pageable);
+        logger.info("Retrieved {} posts", allPosts.stream());
         return allPosts;
     }
 
@@ -189,7 +189,7 @@ public class PostsServiceImpl implements PostsService {
         if (users != null) {
             return postsRepository.findByUserId(users, pageable);
         } else {
-            logger.error("User not found with username: {}", currentUsername);
+            logger.error("Users not found with username: {}", currentUsername);
             throw new EntityNotFoundException("User not found with username: " + currentUsername);
         }
     }

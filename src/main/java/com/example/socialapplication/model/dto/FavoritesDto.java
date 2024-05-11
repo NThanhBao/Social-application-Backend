@@ -20,12 +20,22 @@ public class FavoritesDto {
 
     private String totalLike;
 
+    private String totalShare;
+
     private List<String> mediasId;
 
     private String totalComment;
 
     private String userID;
 
+    private String avatar;
+
+    private String firstName;
+
+    private String lastName;
+
     private Timestamp createAt;
+
+    private List<String> mediaPublicUrls;
 
 }

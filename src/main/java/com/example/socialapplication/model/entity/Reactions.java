@@ -3,7 +3,8 @@ package com.example.socialapplication.model.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.UUID;
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Data
@@ -21,12 +22,20 @@ public class Reactions {
 
     private String type;
 
+    @Column(name = "create_at")
+    private Timestamp createAt;
+
     @ManyToOne
     @JoinColumn(name = "created_by")
-    private Users createdBy;
+    private Users createBy;
 
     // Phương thức setter cho createdBy
-    public void setCreatedBy(Users createdBy) {
-        this.createdBy = createdBy;
+    public void setCreateBy(Users createBy) {
+        this.createBy = createBy;
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createAt = new Timestamp(new Date().getTime());
     }
 }

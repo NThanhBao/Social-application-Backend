@@ -27,4 +27,6 @@ public class UsersDto {
 
     private String avatar;
 
+    private String background;
+
 }

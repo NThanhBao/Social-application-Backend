@@ -26,4 +26,5 @@ public class SearchUserDto {
 
     private String avatar;
 
+    private String background;
 }

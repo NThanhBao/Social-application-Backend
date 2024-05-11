@@ -14,6 +14,6 @@ public interface SharesPostService {
 
     List<SharesPosts> getSharedPostByCurrentUser(String currentUsername);
 
-    List<SharesPosts> getSharedPostsByUserId(String userId);
+    List<SharesPosts> getListSharedPostsByPostId(String postId);
 
 }

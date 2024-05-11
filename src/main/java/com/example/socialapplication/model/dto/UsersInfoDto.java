@@ -32,4 +32,6 @@ public class UsersInfoDto {
     private String address;
 
     private String avatar;
+
+    private String background;
 }

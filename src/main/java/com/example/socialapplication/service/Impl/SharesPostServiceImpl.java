@@ -96,12 +96,13 @@ public class SharesPostServiceImpl implements SharesPostService {
     }
 
     @Override
-    public List<SharesPosts> getSharedPostsByUserId(String userId) {
-        Users user = usersRepository.findById(userId).orElse(null);
-        if (user == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
+    public List<SharesPosts> getListSharedPostsByPostId(String postId) {
+        Posts post = postsRepository.findById(postId).orElse(null);
+        if (post == null) {
+            throw new NotFoundException("Không tìm thấy bài viết với ID: " + postId);
         }
-        logger.error("lấy thành công cho user có id: {}", userId);
-        return sharesPostsRepository.findByCreateBy(user);
+        logger.info("Lấy thành công các bài viết được chia sẻ cho bài viết có ID: {}", postId);
+        return sharesPostsRepository.findByPostId(post);
     }
+
 }

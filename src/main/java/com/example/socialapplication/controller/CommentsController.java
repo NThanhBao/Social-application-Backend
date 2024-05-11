@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -50,7 +51,6 @@ public class CommentsController {
         }
     }
 
-
     @PutMapping("/update")
     public void update(@RequestParam String id, @RequestParam String content) {
         CommentsDto comment = new CommentsDto();
@@ -62,5 +62,21 @@ public class CommentsController {
     @DeleteMapping("/delete/{commentId}")
     public void deleteComment(@PathVariable UUID commentId) {
         commentsService.deleteComment(commentId);
+    }
+
+    @CheckLogin
+    @GetMapping("/my-posts")
+    public ResponseEntity<List<Comments>> getAllCommentsOnAllMyPosts(@RequestParam(defaultValue = "0") int page,
+                                                                     @RequestParam(defaultValue = "100") int pageSize,
+                                                                     @RequestParam(defaultValue = "createAt") String sortName,
+                                                                     @RequestParam(defaultValue = "DESC") String sortType)  {
+        try {
+            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<Comments> commentsPage = commentsService.getAllCommentsOnAllMyPosts(pageable);
+            return ResponseEntity.ok().body(commentsPage.getContent());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

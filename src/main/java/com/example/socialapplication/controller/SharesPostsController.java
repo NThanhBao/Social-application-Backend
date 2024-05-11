@@ -12,10 +12,10 @@ import org.springframework.security.authentication.AuthenticationCredentialsNotF
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/shares")
 public class SharesPostsController {
 
@@ -58,15 +58,15 @@ public class SharesPostsController {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<SharesPosts>> getSharedPostsByUserId(@PathVariable String userId) {
+    @GetMapping("/post/{postId}/shared")
+    public ResponseEntity<List<SharesPosts>> getlistUserSharePostsByPostId(@PathVariable String postId) {
         try {
-            List<SharesPosts> sharesPosts = sharesPostService.getSharedPostsByUserId(userId);
-            return ResponseEntity.ok(sharesPosts);
+            List<SharesPosts> sharedPosts = sharesPostService.getListSharedPostsByPostId(postId);
+            return ResponseEntity.ok(sharedPosts);
         } catch (NotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+            return ResponseEntity.notFound().build();
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Collections.emptyList());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

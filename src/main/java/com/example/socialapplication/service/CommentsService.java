@@ -17,4 +17,6 @@ public interface CommentsService {
     void deleteComment(UUID commentId);
 
     void updateComments(CommentsDto commentsDto);
+
+    Page<Comments> getAllCommentsOnAllMyPosts(Pageable pageable);
 }

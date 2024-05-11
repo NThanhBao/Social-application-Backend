@@ -14,6 +14,7 @@ import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import com.example.socialapplication.util.exception.UnauthorizedException;
 import com.github.benmanes.caffeine.cache.Cache;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -52,7 +53,7 @@ public class ReactionsServiceImpl implements ReactionsService {
         String currentUsername = auth.getName();
         Users currentUser = usersRepository.findByUsername(currentUsername);
 
-        Optional<Reactions> existingReaction = reactionsRepository.findByCreatedByAndObjectIdAndType(currentUser, reactionDTO.getObjectId(), reactionDTO.getType());
+        Optional<Reactions> existingReaction = reactionsRepository.findByCreateByAndObjectIdAndType(currentUser, reactionDTO.getObjectId(), reactionDTO.getType());
 
         if (existingReaction.isPresent()) {
             return ResponseEntity.badRequest().body("Bạn đã thả cảm xúc cho đối tượng này trước đó.");
@@ -80,7 +81,7 @@ public class ReactionsServiceImpl implements ReactionsService {
 
             Reactions reaction = new Reactions();
             reaction.setReactionsId(UUID.randomUUID().toString());
-            reaction.setCreatedBy(currentUser);
+            reaction.setCreateBy(currentUser);
 
             reaction.setObjectType(reactionDTO.getObjectType());
             reaction.setObjectId(reactionDTO.getObjectId());
@@ -109,7 +110,7 @@ public class ReactionsServiceImpl implements ReactionsService {
             throw new NotFoundException("Không tìm thấy phản ứng cần xóa!");
         }
         Reactions reaction = reactionOptional.get();
-        if (!reaction.getCreatedBy().getId().equals(currentUser.getId())) {
+        if (!reaction.getCreateBy().getId().equals(currentUser.getId())) {
             throw new UnauthorizedException("Bạn không có quyền xóa phản ứng này!");
         }
 
@@ -150,7 +151,7 @@ public class ReactionsServiceImpl implements ReactionsService {
         Optional<Reactions> reactionOptional = reactionsRepository.findById(reactionId);
         if (reactionOptional.isPresent()) {
             Reactions reaction = reactionOptional.get();
-            if (reaction.getCreatedBy().equals(currentUser)) {
+            if (reaction.getCreateBy().equals(currentUser)) {
 
                 reaction.setObjectType(updatedReactionDto.getObjectType());
                 reaction.setObjectId(updatedReactionDto.getObjectId());
@@ -208,7 +209,7 @@ public class ReactionsServiceImpl implements ReactionsService {
         if (!reactions.isEmpty()) {
             List<UsersInfoDto> usersDTOList = reactions.stream()
                     .map(reaction -> {
-                        Users createdBy = reaction.getCreatedBy();
+                        Users createdBy = reaction.getCreateBy();
                         UsersInfoDto usersInfoDto = new UsersInfoDto();
                         usersInfoDto.setId(createdBy.getId());
                         usersInfoDto.setUsername(createdBy.getUsername());
@@ -249,7 +250,7 @@ public class ReactionsServiceImpl implements ReactionsService {
         if (!reactions.isEmpty()) {
         List<UsersInfoDto> usersDTOList = reactions.stream()
                 .map(reaction -> {
-                    Users createdBy = reaction.getCreatedBy();
+                    Users createdBy = reaction.getCreateBy();
                     UsersInfoDto usersInfoDto = new UsersInfoDto();
                     usersInfoDto.setId(createdBy.getId());
                     usersInfoDto.setUsername(createdBy.getUsername());
@@ -271,6 +272,24 @@ public class ReactionsServiceImpl implements ReactionsService {
         return new PageImpl<>(usersDTOList.subList(start, end), pageable, usersDTOList.size());
         } else {
             throw new IllegalArgumentException("Không tìm thấy!");
+        }
+    }
+
+    @Override
+    public Page<Reactions> getAllReactionsOnCurrentUserPosts(Pageable pageable) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = authentication.getName();
+
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+
+        if (currentUser != null) {
+            // Lấy danh sách các id của bài viết của người dùng
+            List<String> postIds = postsRepository.findPostIdsByUserId(currentUser.getId());
+
+            // Truy vấn các phản ứng dựa trên danh sách các id của bài viết
+            return reactionsRepository.findByPostIdIn(postIds, pageable);
+        } else {
+            throw new EntityNotFoundException("Không tìm thấy người dùng với username: " + currentUsername);
         }
     }
 }

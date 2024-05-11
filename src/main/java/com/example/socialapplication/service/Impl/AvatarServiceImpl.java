@@ -25,8 +25,11 @@ public class AvatarServiceImpl implements AvatarService {
 
     String bucketName = "avatar";
     Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
-    public AvatarServiceImpl(MinioClient minioClient, UsersRepository usersRepository) {
-        this.minioClient = minioClient;
+    public AvatarServiceImpl( UsersRepository usersRepository) {
+        this.minioClient = MinioClient.builder()
+                .endpoint("http://localhost:9000")
+                .credentials("root", "12345678")
+                .build();
         this.usersRepository = usersRepository;
     }
 

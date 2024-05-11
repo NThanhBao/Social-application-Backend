@@ -5,7 +5,6 @@ import com.example.socialapplication.model.entity.Posts;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface PostsService {
@@ -20,7 +19,7 @@ public interface PostsService {
 
     int getNumberOfPostsByUserId(UUID userId);
 
-    List<Posts> getAllPosts(Pageable pageable);
+    Page<Posts> getAllPosts(Pageable pageable);
 
     int getNumberOfPosts();
 

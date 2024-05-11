@@ -48,7 +48,7 @@ public class FavoritesController {
     @GetMapping("/all-posts")
     public ResponseEntity<List<FavoritesDto>> getFavoritesByToken(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "100") int pageSize,
             @RequestParam(defaultValue = "createAt") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType) {
 

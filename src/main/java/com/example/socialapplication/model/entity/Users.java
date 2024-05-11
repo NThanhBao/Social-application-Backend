@@ -51,7 +51,11 @@ public class Users {
     @Column
     private String address;
 
+    @Column
     private String avatar;
+
+    @Column
+    private String background;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
