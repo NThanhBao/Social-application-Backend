@@ -19,5 +19,7 @@ public interface CommentsRepository extends JpaRepository<Comments, String> {
     @Query("SELECT c FROM Comments c WHERE c.postId.id IN :postIds")
     Page<Comments> findByPostIdIn(@Param("postIds") List<String> postIds, Pageable pageable);
 
+    @Query("SELECT c.id FROM Comments c WHERE c.createBy.id = :userId")
+    List<String> findCommentIdsByUserId(@Param("userId") String userId);
 }
 

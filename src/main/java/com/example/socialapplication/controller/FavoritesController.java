@@ -79,10 +79,4 @@ public class FavoritesController {
         }
     }
 
-    @CheckLogin
-    @GetMapping("/check/{postId}")
-    public ResponseEntity<Boolean> checkFavoriteStatus(@PathVariable String postId) {
-        boolean isFavorite = favoritesService.checkFavoriteStatus(postId);
-        return ResponseEntity.ok().body(isFavorite);
-    }
 }

@@ -2,6 +2,7 @@ package com.example.socialapplication.controller;
 
 import com.example.socialapplication.model.dto.ReactionsDto;
 import com.example.socialapplication.model.dto.UsersInfoDto;
+import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Reactions;
 import com.example.socialapplication.service.ReactionsService;
 import com.example.socialapplication.util.annotation.CheckLogin;
@@ -41,10 +42,10 @@ public class ReactionsController {
     }
 
     @CheckLogin
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteReaction(@PathVariable String id) {
+    @DeleteMapping("/{reactionsId}")
+    public ResponseEntity<String> deleteReaction(@PathVariable String reactionsId) {
         try {
-            reactionsService.deleteReaction(id);
+            reactionsService.deleteReaction(reactionsId);
             return ResponseEntity.ok("Hủy thành công reactions.");
         }  catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -134,5 +135,33 @@ public class ReactionsController {
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }
+
+    @CheckLogin
+    @GetMapping("/my-comments")
+    public ResponseEntity<List<Reactions>> getAllReactionsOnCurrentUserComments(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "100") int pageSize,
+            @RequestParam(defaultValue = "createAt") String sortName,
+            @RequestParam(defaultValue = "DESC") String sortType) {
+        try {
+            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<Reactions> reactionsPage = reactionsService.getAllReactionsOnCurrentUserComments(pageable);
+            return ResponseEntity.ok().body(reactionsPage.getContent());
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @CheckLogin
+    @GetMapping("/all-posts")
+    public ResponseEntity<List<Reactions>> getUserPostsByReactions(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Reactions> userPosts = reactionsService.getAllReactionsOfCurrentUser(pageable);
+        return ResponseEntity.ok().body(userPosts.getContent());
     }
 }

@@ -3,13 +3,16 @@ package com.example.socialapplication.model.entity;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
 @Entity
+@Getter
+@Setter
 @Data
 @Table(name = "medias")
 public class Medias {

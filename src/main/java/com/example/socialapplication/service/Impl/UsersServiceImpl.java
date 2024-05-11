@@ -150,15 +150,15 @@ public class UsersServiceImpl implements UsersService {
     public ResponseEntity<String> updateUser(UsersDto updatedUserDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = auth.getName();
-        Users users = userRepository.findByUsername(currentUsername);
+        Users existingUser = userRepository.findByUsername(currentUsername);
 
-        if (!users.getUsername().equals(updatedUserDto.getUsername())) {
-            logger.warn("Người dùng '{}' không được phép sửa thông tin người dùng khác.", currentUsername);
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Bạn không có quyền sửa đổi thông tin người dùng khác.");
+        // Kiểm tra xem người dùng có tồn tại không
+        if (existingUser == null) {
+            logger.warn("Không tìm thấy người dùng với username: '{}'", currentUsername);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy người dùng");
         }
 
-        Users existingUser = userRepository.findByUsername(updatedUserDto.getUsername());
-
+        // Cập nhật thông tin người dùng
         existingUser.setFirstName(updatedUserDto.getFirstName());
         existingUser.setLastName(updatedUserDto.getLastName());
         existingUser.setGender(updatedUserDto.isGender());
@@ -167,13 +167,15 @@ public class UsersServiceImpl implements UsersService {
         existingUser.setAddress(updatedUserDto.getAddress());
         existingUser.setMail(updatedUserDto.getMail());
 
-        registerRepository.save(existingUser);
+        // Lưu thông tin cập nhật vào cơ sở dữ liệu
+        userRepository.save(existingUser);
 
-        logger.info("Thông tin của người dùng '{}' đã được cập nhật thành công", existingUser.getUsername());
-        return ResponseEntity.ok("Cập nhật thành công usernames : " + existingUser.getUsername());
+        logger.info("Thông tin của người dùng '{}' đã được cập nhật thành công", currentUsername);
+        return ResponseEntity.ok("Cập nhật thành công thông tin người dùng");
     }
 
-//    Phương thức xóa người dùng.
+
+    //    Phương thức xóa người dùng.
     @Override
     public ResponseEntity<String> deleteUser(String username) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

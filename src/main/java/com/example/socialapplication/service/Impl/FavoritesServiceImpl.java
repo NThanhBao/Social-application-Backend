@@ -121,17 +121,4 @@ public class FavoritesServiceImpl implements FavoritesService {
         postsRepository.deleteFavoriteByUserIdAndPostId(currentUserId, postId);
     }
 
-    @Override
-    public boolean checkFavoriteStatus(String postId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null) {
-            return false;
-        }
-        String currentUsername = authentication.getName();
-        Users currentUser = usersRepository.findByUsername(currentUsername);
-        String currentUserId = currentUser.getId();
-        int count = postsRepository.countFavoritesByUserIdAndPostId(currentUserId, postId);
-        return count > 0;
-    }
-
 }

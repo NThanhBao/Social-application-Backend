@@ -3,7 +3,7 @@ package com.example.socialapplication.service;
 
 import com.example.socialapplication.model.dto.ReactionsDto;
 import com.example.socialapplication.model.dto.UsersInfoDto;
-import com.example.socialapplication.model.entity.Comments;
+import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Reactions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 public interface ReactionsService {
     ResponseEntity<String> createReaction(ReactionsDto reactionDTO);
 
-    void deleteReaction(String reactionId);
+    void deleteReaction(String objectId);
 
     int getReactionCountByIdPost(String object_id);
 
@@ -27,4 +27,8 @@ public interface ReactionsService {
     Page<UsersInfoDto> getAllUsersInReactions(Pageable pageable);
 
     Page<Reactions> getAllReactionsOnCurrentUserPosts(Pageable pageable);
+
+    Page<Reactions> getAllReactionsOnCurrentUserComments(Pageable pageable);
+
+    Page<Reactions> getAllReactionsOfCurrentUser(Pageable pageable);
 }

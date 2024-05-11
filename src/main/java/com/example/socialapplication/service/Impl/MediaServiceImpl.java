@@ -8,8 +8,12 @@ import com.example.socialapplication.service.MediaService;
 import com.example.socialapplication.util.exception.NotFoundException;
 import io.minio.*;
 import io.minio.errors.MinioException;
+import io.minio.messages.Item;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -20,6 +24,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -52,13 +60,17 @@ public class MediaServiceImpl implements MediaService {
 
             try (InputStream inputStream = new BufferedInputStream(filePath.getInputStream())) {
                 String originalFileName = filePath.getOriginalFilename();
-                String objectName = userId + "/" + originalFileName;
+                assert originalFileName != null;
+                String fileExtension = getFileExtension(originalFileName).toLowerCase();
+                String objectType = (fileExtension.equals("mp4") || fileExtension.equals("avi") || fileExtension.equals("mov") || fileExtension.equals("wmv")) ? "videos" : "images";
+                String objectName = userId + "/" + objectType + "/" + originalFileName;
+
                 minioClient.putObject(
                         PutObjectArgs.builder()
                                 .bucket(bucketName)
                                 .object(objectName)
                                 .stream(inputStream, inputStream.available(), -1)
-                                .contentType(getContentType(objectName))
+                                .contentType(getContentType(originalFileName))
                                 .build()
                 );
 
@@ -115,6 +127,154 @@ public class MediaServiceImpl implements MediaService {
             throw new NotFoundException("Không tìm thấy tệp đính kèm từ MinIO: " + e.getMessage());
         }
     }
+
+    @Override
+    public Page<Medias> getAllImagesByLoggedInUser(Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = auth.getName();
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String userId = currentUser.getId();
+
+        // Tạo đường dẫn đến thư mục chứa ảnh của người dùng
+        String imagesPrefix = userId + "/images/";
+        List<Medias> images = new ArrayList<>();
+
+        try {
+            // Lấy danh sách đối tượng ảnh từ MinIO
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(imagesPrefix)
+                            .build()
+            );
+
+            // Lặp qua danh sách và thêm các đối tượng ảnh vào danh sách images
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                Medias media = new Medias();
+                media.setBaseName(item.objectName().substring(imagesPrefix.length()));
+                media.setPublicUrl(bucketName + "/" + item.objectName());
+                media.setCreateAt(new Timestamp(new Date().getTime()));
+                images.add(media);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting images from MinIO", e);
+            // Xử lý lỗi nếu cần
+        }
+
+        // Tạo trang từ danh sách ảnh và Pageable
+        return new PageImpl<>(images, pageable, images.size());
+    }
+
+
+
+    @Override
+    public Page<Medias> getAllVideosByLoggedInUser(Pageable pageable) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String currentUsername = auth.getName();
+        Users currentUser = usersRepository.findByUsername(currentUsername);
+        String userId = currentUser.getId();
+
+        // Tạo đường dẫn đến thư mục chứa video của người dùng
+        String videosPrefix = userId + "/videos/";
+
+        List<Medias> videos = new ArrayList<>();
+
+        try {
+            // Lấy danh sách đối tượng video từ MinIO
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(videosPrefix)
+                            .build()
+            );
+
+            // Lặp qua danh sách và thêm các đối tượng video vào danh sách videos
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                Medias media = new Medias();
+                media.setBaseName(item.objectName().substring(videosPrefix.length())); // Lấy tên file
+                media.setPublicUrl(bucketName + "/" + item.objectName());
+                media.setCreateAt(new Timestamp(new Date().getTime()));
+                videos.add(media);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting videos from MinIO", e);
+            // Xử lý lỗi nếu cần
+        }
+
+        // Tạo trang từ danh sách video và Pageable
+        return new PageImpl<>(videos, pageable, videos.size());
+    }
+
+    @Override
+    public Page<Medias> getAllImagesByUserId(String userId, Pageable pageable) {
+        // Tạo đường dẫn đến thư mục chứa ảnh của người dùng
+        String imagesPrefix = userId + "/images/";
+
+        List<Medias> images = new ArrayList<>();
+
+        try {
+            // Lấy danh sách đối tượng ảnh từ MinIO
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(imagesPrefix)
+                            .build()
+            );
+
+            // Lặp qua danh sách và thêm các đối tượng ảnh vào danh sách images
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                Medias media = new Medias();
+                media.setBaseName(item.objectName().substring(imagesPrefix.length())); // Lấy tên file
+                media.setPublicUrl(bucketName + "/" + item.objectName());
+                media.setCreateAt(new Timestamp(new Date().getTime())); // Thiết lập createAt
+                images.add(media);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting images from MinIO", e);
+            // Xử lý lỗi nếu cần
+        }
+
+        // Tạo trang từ danh sách ảnh và Pageable
+        return new PageImpl<>(images, pageable, images.size());
+    }
+
+    @Override
+    public Page<Medias> getAllVideosByUserId(String userId, Pageable pageable) {
+        // Tạo đường dẫn đến thư mục chứa video của người dùng
+        String videosPrefix = userId + "/videos/";
+
+        List<Medias> videos = new ArrayList<>();
+
+        try {
+            // Lấy danh sách đối tượng video từ MinIO
+            Iterable<Result<Item>> results = minioClient.listObjects(
+                    ListObjectsArgs.builder()
+                            .bucket(bucketName)
+                            .prefix(videosPrefix)
+                            .build()
+            );
+
+            // Lặp qua danh sách và thêm các đối tượng video vào danh sách videos
+            for (Result<Item> result : results) {
+                Item item = result.get();
+                Medias media = new Medias();
+                media.setBaseName(item.objectName().substring(videosPrefix.length())); // Lấy tên file
+                media.setPublicUrl(bucketName + "/" + item.objectName());
+                media.setCreateAt(new Timestamp(new Date().getTime()));
+                videos.add(media);
+            }
+        } catch (Exception e) {
+            logger.error("Error getting videos from MinIO", e);
+            // Xử lý lỗi nếu cần
+        }
+
+        // Tạo trang từ danh sách video và Pageable
+        return new PageImpl<>(videos, pageable, videos.size());
+    }
+
 
     private String getContentType(String fileName) {
         String fileExtension = getFileExtension(fileName).toLowerCase();

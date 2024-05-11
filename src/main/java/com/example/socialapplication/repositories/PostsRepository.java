@@ -3,6 +3,7 @@ package com.example.socialapplication.repositories;
 
 import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Users;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,7 +22,7 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
     @Transactional
     @Modifying
     @Query("DELETE FROM Posts p WHERE p.id = :postId")
-    void deleteById(String postId);
+    void deleteById(@NotNull String postId);
     int countByUserId(Users user);
 
     @Query("SELECT p FROM Posts p JOIN p.favoritesUser u WHERE u.id = :userId")
@@ -37,4 +38,6 @@ public interface PostsRepository extends JpaRepository<Posts, String> {
 
     @Query("SELECT p.id FROM Posts p WHERE p.userId.id = :userId")
     List<String> findPostIdsByUserId(@Param("userId") String userId);
+
+    Page<Posts> findByIdIn(List<String> postIds, Pageable pageable);
 }

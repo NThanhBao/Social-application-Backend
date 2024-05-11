@@ -26,4 +26,8 @@ public interface ReactionsRepository extends JpaRepository<Reactions, String> {
     @Query("SELECT r FROM Reactions r WHERE r.objectId IN :postIds")
     Page<Reactions> findByPostIdIn(@Param("postIds") List<String> postIds, Pageable pageable);
 
+    @Query("SELECT r FROM Reactions r WHERE r.objectId IN :id")
+    Page<Reactions> findByCommentIdIn(List<String> id, Pageable pageable);
+
+    Page<Reactions> findAllByCreateBy(Users user, Pageable pageable);
 }

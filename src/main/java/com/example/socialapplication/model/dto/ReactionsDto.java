@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class ReactionsDto {
 
-    private String id;
+    private String reactionsId;
 
     private String objectType;
 

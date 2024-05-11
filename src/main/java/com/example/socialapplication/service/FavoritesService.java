@@ -12,5 +12,4 @@ public interface FavoritesService {
 
     Page<FavoritesDto> getFavoritesByToken(Pageable pageable);
 
-    boolean checkFavoriteStatus(String postId);
 }
