@@ -33,13 +33,11 @@ public class CommentsServiceImpl implements CommentsService {
     private final CommentsRepository commentsRepository;
     private final PostsRepository postsRepository;
     private static final Logger logger = LoggerFactory.getLogger(CommentsServiceImpl.class);
-    private final UsersRepository userRepository;
 
-    public CommentsServiceImpl(UsersRepository usersRepository, CommentsRepository commentsRepository, PostsRepository postsRepository, UsersRepository userRepository) {
+    public CommentsServiceImpl(UsersRepository usersRepository, CommentsRepository commentsRepository, PostsRepository postsRepository) {
         this.usersRepository = usersRepository;
         this.commentsRepository = commentsRepository;
         this.postsRepository = postsRepository;
-        this.userRepository = userRepository;
     }
 
     @Override
@@ -152,5 +150,16 @@ public class CommentsServiceImpl implements CommentsService {
         } else {
             throw new EntityNotFoundException("Không tìm thấy người dùng với username: " + currentUsername);
         }
+    }
+    @Override
+    public int getNumberOfComments() {
+        List<Comments> allPosts = commentsRepository.findAll();
+        logger.info("Number of posts: {}", allPosts.size());
+        return allPosts.size();
+    }
+
+    @Override
+    public Page<Comments> getAllCommentsOnAllPosts(Pageable pageable) {
+        return commentsRepository.findAll(pageable);
     }
 }

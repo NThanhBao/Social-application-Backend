@@ -18,5 +18,4 @@ public interface MediaService {
     Page<Medias> getAllImagesByUserId(String userId, Pageable pageable);
 
     Page<Medias> getAllVideosByUserId(String userId, Pageable pageable);
-
 }

@@ -1,8 +1,10 @@
 package com.example.socialapplication.service.Impl;
 
 import com.example.socialapplication.model.entity.Medias;
+import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Users;
 import com.example.socialapplication.repositories.MediaRepository;
+import com.example.socialapplication.repositories.PostsRepository;
 import com.example.socialapplication.repositories.UsersRepository;
 import com.example.socialapplication.service.MediaService;
 import com.example.socialapplication.util.exception.NotFoundException;
@@ -25,6 +27,8 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,16 +39,18 @@ public class MediaServiceImpl implements MediaService {
     private final MinioClient minioClient;
     private final UsersRepository usersRepository;
     private final MediaRepository mediaRepository;
+    private final PostsRepository postsRepository;
     String bucketName = "posts";
     private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 
-    public MediaServiceImpl(UsersRepository usersRepository, MediaRepository mediaRepository) {
+    public MediaServiceImpl(UsersRepository usersRepository, MediaRepository mediaRepository, PostsRepository postsRepository) {
         this.minioClient = MinioClient.builder()
                 .endpoint("http://localhost:9000")
                 .credentials("root", "12345678")
                 .build();
         this.usersRepository = usersRepository;
         this.mediaRepository = mediaRepository;
+        this.postsRepository = postsRepository;
     }
 
     @Override
@@ -93,7 +99,6 @@ public class MediaServiceImpl implements MediaService {
             throw new Exception("Error uploading file to MinIO", e);
         }
     }
-
 
     @Override
     public void deletePost(String objectName) {

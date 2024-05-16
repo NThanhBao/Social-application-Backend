@@ -1,6 +1,5 @@
 package com.example.socialapplication.controller;
 
-
 import com.example.socialapplication.service.AvatarService;
 import com.example.socialapplication.util.annotation.CheckLogin;
 import org.springframework.http.HttpStatus;

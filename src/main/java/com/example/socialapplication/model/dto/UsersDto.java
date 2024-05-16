@@ -1,11 +1,15 @@
 package com.example.socialapplication.model.dto;
 
+import com.example.socialapplication.model.entity.Enum.EnableType;
+import com.example.socialapplication.model.entity.Enum.RoleType;
 import lombok.Data;
 
 import java.sql.Timestamp;
 
 @Data
 public class UsersDto {
+
+    private String id;
 
     private String username;
 
@@ -18,6 +22,10 @@ public class UsersDto {
     private String firstName;
 
     private String lastName;
+
+    private EnableType enableType;
+
+    private RoleType roleType;
 
     private boolean gender;
 

@@ -19,4 +19,8 @@ public interface CommentsService {
     void updateComments(CommentsDto commentsDto);
 
     Page<Comments> getAllCommentsOnAllMyPosts(Pageable pageable);
+
+    Page<Comments> getAllCommentsOnAllPosts(Pageable pageable);
+
+    int getNumberOfComments();
 }

@@ -9,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,20 +59,25 @@ public class UsersController {
         String password = loginRequest.get("password");
 
         try {
+            // Xác thực người dùng và lấy thông tin người dùng từ userService
             UserDetails userDetails = userService.login(username, password);
             String token = jwtTokenUtil.generateToken(username);
             Users users = userService.getUserByUsername(username);
             UsersInfoDto usersInfoDto = modelMapper.map(users, UsersInfoDto.class);
 
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("token", token); // Remove colon after "token"
+            responseData.put("token", token);
             responseData.put("userInfo", usersInfoDto);
-
             return ResponseEntity.ok(responseData);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Tài khoản không tồn tại");
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password");
+        } catch (DisabledException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Tài khoản của bạn đã bị vô hiệu hóa. Vui lòng liên hệ với quản trị viên để biết thêm chi tiết.");
         }
     }
+
     @CheckLogin
     @GetMapping("/profile")
     public ResponseEntity<?> getProfile() {
@@ -89,11 +96,7 @@ public class UsersController {
         return registerService.addUser(registerDTO);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Users>> getAllUsers() {
-        List<Users> users = userService.getAllUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
-    }
+
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<?> getUserById(@PathVariable String userId) {

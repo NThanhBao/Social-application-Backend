@@ -1,23 +1,26 @@
 package com.example.socialapplication.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.UUID;
 
 @Entity
 @Table(name = "OTPs")
 @Getter
 @Setter
-@NoArgsConstructor
 public class OTP_ResetPassword {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(length = 36)
+    @NotNull
+    @EqualsAndHashCode.Include
+    private String id;
 
     @Column(unique = true)
     private String otp;
@@ -31,6 +34,13 @@ public class OTP_ResetPassword {
 
     private boolean used;
 
+    public OTP_ResetPassword() {
+        this.id = UUID.randomUUID().toString();
+    }
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private Users userId;
 
     @PrePersist
     protected void onCreate() {

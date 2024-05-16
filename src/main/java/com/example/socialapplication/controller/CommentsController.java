@@ -35,22 +35,6 @@ public class CommentsController {
         return commentsService.saveComment(comment);
     }
 
-    @GetMapping("/post/{postId}")
-    public ResponseEntity<Page<Comments>> getCommentsByPostId(@PathVariable String postId,
-                                                              @RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int pageSize,
-                                                              @RequestParam(defaultValue = "createAt") String sortName,
-                                                              @RequestParam(defaultValue = "DESC") String sortType) {
-        try {
-            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
-            Page<Comments> commentsPage = commentsService.getCommentsByPostId(postId, pageable);
-            return   ResponseEntity.ok().body(commentsPage);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     @PutMapping("/update")
     public void update(@RequestParam String id, @RequestParam String content) {
         CommentsDto comment = new CommentsDto();
@@ -75,6 +59,22 @@ public class CommentsController {
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
             Page<Comments> commentsPage = commentsService.getAllCommentsOnAllMyPosts(pageable);
             return ResponseEntity.ok().body(commentsPage.getContent());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/post/{postId}")
+    public ResponseEntity<Page<Comments>> getCommentsByPostId(@PathVariable String postId,
+                                                              @RequestParam(defaultValue = "0") int page,
+                                                              @RequestParam(defaultValue = "10") int pageSize,
+                                                              @RequestParam(defaultValue = "createAt") String sortName,
+                                                              @RequestParam(defaultValue = "DESC") String sortType) {
+        try {
+            Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<Comments> commentsPage = commentsService.getCommentsByPostId(postId, pageable);
+            return   ResponseEntity.ok().body(commentsPage);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

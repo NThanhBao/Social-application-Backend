@@ -3,11 +3,11 @@ package com.example.socialapplication.service;
 import com.example.socialapplication.model.dto.UsersDto;
 import com.example.socialapplication.model.dto.UsersInfoDto;
 import com.example.socialapplication.model.entity.Users;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import java.util.List;
 
 public interface UsersService extends UserDetailsService {
 
@@ -27,5 +27,11 @@ public interface UsersService extends UserDetailsService {
 
     UsersInfoDto getUserById(String userId);
 
-    List<Users> getAllUsers();
+    Users getUserByIds(String userId);
+
+    Page<Users> getAllUsers(Pageable pageable);
+
+    ResponseEntity<String> userDisableTypeById(String userId);
+
+    ResponseEntity<String> userEnableTypeById(String userId);
 }

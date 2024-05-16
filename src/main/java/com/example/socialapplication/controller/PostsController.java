@@ -109,12 +109,6 @@ public class PostsController {
         }
     }
 
-    @GetMapping("/allCount")
-    public ResponseEntity<Integer> getNumberOfPosts() {
-        int numberOfPosts = postsService.getNumberOfPosts();
-        return new ResponseEntity<>(numberOfPosts, HttpStatus.OK);
-    }
-
     @GetMapping("/userCount/{userId}")
     public ResponseEntity<Integer> getNumberOfPostsByUserId(@PathVariable("userId") UUID userId) {
         int numberOfPosts = postsService.getNumberOfPostsByUserId(userId);

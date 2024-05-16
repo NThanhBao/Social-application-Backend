@@ -155,7 +155,7 @@ public class ReactionsController {
     }
 
     @CheckLogin
-    @GetMapping("/all-posts")
+    @GetMapping("/all-posts&comments")
     public ResponseEntity<List<Reactions>> getUserPostsByReactions(
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "10") int size) {

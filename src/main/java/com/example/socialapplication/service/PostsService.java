@@ -26,4 +26,5 @@ public interface PostsService {
     Page<Posts> getListOfPostsByLoggedInUser(Pageable pageable);
 
     int getNumberOfPostsByLoggedInUser();
+
 }
