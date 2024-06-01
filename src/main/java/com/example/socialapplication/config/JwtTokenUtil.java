@@ -44,7 +44,7 @@ public class JwtTokenUtil {
 
     private String createToken(Map<String, Object> claims, String username) {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MONTH, 1); // Thêm 1 tháng vào thời gian hiện tại
+        calendar.add(Calendar.MONTH, 1);
 
         return Jwts.builder()
                 .setClaims(claims)

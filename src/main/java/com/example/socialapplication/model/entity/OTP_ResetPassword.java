@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -42,8 +41,4 @@ public class OTP_ResetPassword {
     @JoinColumn(name = "created_by")
     private Users userId;
 
-    @PrePersist
-    protected void onCreate() {
-        createAt = new Timestamp(new Date().getTime());
-    }
 }

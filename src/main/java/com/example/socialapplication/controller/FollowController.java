@@ -80,7 +80,7 @@ public class FollowController {
     @GetMapping("/ListFollowing")
     public ResponseEntity<List<UsersInfoDto>> getFollowingNavUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "6") int pageSize,
             @RequestParam(defaultValue =  "createAt") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType) {
 
@@ -133,7 +133,7 @@ public class FollowController {
     @GetMapping("/ListUsers/unfollowed")
     public ResponseEntity<List<UsersInfoDto>> getUnfollowedUsers(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int pageSize,
+            @RequestParam(defaultValue = "3") int pageSize,
             @RequestParam(defaultValue = "createAt") String sortName,
             @RequestParam(defaultValue = "ASC") String sortType) {
 

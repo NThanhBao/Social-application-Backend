@@ -1,7 +1,6 @@
 package com.example.socialapplication.service.Impl;
 
 import com.example.socialapplication.model.entity.Medias;
-import com.example.socialapplication.model.entity.Posts;
 import com.example.socialapplication.model.entity.Users;
 import com.example.socialapplication.repositories.MediaRepository;
 import com.example.socialapplication.repositories.PostsRepository;
@@ -27,8 +26,6 @@ import java.io.InputStream;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -44,13 +41,13 @@ public class MediaServiceImpl implements MediaService {
     private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
 
     public MediaServiceImpl(UsersRepository usersRepository, MediaRepository mediaRepository, PostsRepository postsRepository) {
+        this.postsRepository = postsRepository;
         this.minioClient = MinioClient.builder()
                 .endpoint("http://localhost:9000")
                 .credentials("root", "12345678")
                 .build();
         this.usersRepository = usersRepository;
         this.mediaRepository = mediaRepository;
-        this.postsRepository = postsRepository;
     }
 
     @Override

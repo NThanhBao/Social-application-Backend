@@ -90,7 +90,7 @@ public class PostsController {
 
     @GetMapping("/allList")
     public ResponseEntity<List<Posts>> getAllPosts(@RequestParam(defaultValue = "0") int page,
-                                                   @RequestParam(defaultValue = "10") int pageSize,
+                                                   @RequestParam(defaultValue = "100") int pageSize,
                                                    @RequestParam(defaultValue = "totalShare") String sortName,
                                                    @RequestParam(defaultValue = "DESC") String sortType
     ) {

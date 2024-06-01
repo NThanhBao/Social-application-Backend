@@ -14,18 +14,15 @@ import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
@@ -78,30 +75,16 @@ public class CommentsServiceImpl implements CommentsService {
 
     @Override
     public void deleteComment(UUID commentId) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null ) {
-            throw new NotFoundException("bạn cần đăng nhập để thực hiện hành động này !");
-        }
-
-        String currentUsername = auth.getName();
-        Users currentUser = usersRepository.findByUsername(currentUsername);
-        if (currentUser == null) {
-            throw new NotFoundException("Không tìm thấy người dùng!");
-        }
-
         Optional<Comments> comments = commentsRepository.findById(commentId.toString());
         if (comments.isEmpty()){
-            throw new NotFoundException("không tìm thấy bài viết cần xóa !");
+            throw new NotFoundException("Không tìm thấy bình luận cần xóa !");
         }
         Comments comment = comments.get();
-        if (!comment.getCreateBy().getId().equals(currentUser.getId())) {
-            throw new UnauthorizedException("Bạn không có quyền xóa bình luận này!");
-        }
         Posts posts = comment.getPostId();
         posts.setTotalComment(posts.getTotalComment() - 1);
 
         postsRepository.save(posts);
-        logger.info("Xóa thành công comment.");
+        logger.info("Xóa thành công bình luận.");
         commentsRepository.deleteById(commentId.toString());
     }
 
