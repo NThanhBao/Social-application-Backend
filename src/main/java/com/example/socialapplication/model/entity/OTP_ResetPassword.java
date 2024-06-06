@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 @Entity
@@ -35,6 +36,11 @@ public class OTP_ResetPassword {
 
     public OTP_ResetPassword() {
         this.id = UUID.randomUUID().toString();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createAt = new Timestamp(new Date().getTime());
     }
 
     @ManyToOne

@@ -134,9 +134,21 @@ public class AdminController {
 
     @GetMapping("/users-with-otp")
     public ResponseEntity<List<OTP_ResetPassword>> getUsersWithOTP(@RequestParam(defaultValue = "0") int page,
-                                                                   @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<OTP_ResetPassword> usersWithOTP = otpService.findAllUsersWithOTP(pageable);
-        return new ResponseEntity<>(usersWithOTP.getContent(), HttpStatus.OK);
+                                                                   @RequestParam(defaultValue = "12") int pageSize,
+                                                                   @RequestParam(defaultValue = "createAt") String sortName,
+                                                                   @RequestParam(defaultValue = "DESC") String sortType) {
+        try {
+            Sort.Direction direction;
+            if (sortType.equalsIgnoreCase("ASC")) {
+                direction = Sort.Direction.ASC;
+            } else {
+                direction = Sort.Direction.DESC;
+            }
+            Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
+            Page<OTP_ResetPassword> usersWithOTP = otpService.findAllUsersWithOTP(pageable);
+            return new ResponseEntity<>(usersWithOTP.getContent(), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }
