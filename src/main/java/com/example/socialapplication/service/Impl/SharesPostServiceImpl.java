@@ -63,7 +63,6 @@ public class SharesPostServiceImpl implements SharesPostService {
     }
 
 
-
     @Override
     public void deleteSharedPost(String sharesPostId, String currentUsername) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

@@ -28,6 +28,7 @@ public class FavoritesServiceImpl implements FavoritesService {
         this.postsRepository = postsRepository;
     }
 
+
     @Override
     public void saveFavorite(String postId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -57,6 +58,7 @@ public class FavoritesServiceImpl implements FavoritesService {
         usersRepository.save(user);
     }
 
+
     @Override
     public Page<FavoritesDto> getFavoritesByToken(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -69,6 +71,7 @@ public class FavoritesServiceImpl implements FavoritesService {
 
         return favoritePostsPage.map(this::convertToDto);
     }
+
 
     private FavoritesDto convertToDto(Posts post) {
         FavoritesDto favoritesDto = new FavoritesDto();
@@ -96,7 +99,6 @@ public class FavoritesServiceImpl implements FavoritesService {
 
         return favoritesDto;
     }
-
 
 
     @Override

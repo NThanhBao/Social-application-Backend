@@ -45,6 +45,7 @@ public class UsersController {
     private final ModelMapper modelMapper;
     private final UsersServiceImpl registerService;
     private final SearchUsersService searchUsersService;
+
     public UsersController(UsersService userService, JwtTokenUtil jwtTokenUtil, ModelMapper modelMapper, UsersServiceImpl registerService, SearchUsersService searchUsersService) {
         this.userService = userService;
         this.jwtTokenUtil = jwtTokenUtil;
@@ -95,7 +96,6 @@ public class UsersController {
     public ResponseEntity<?> addNewUser(@RequestBody UsersDto registerDTO) {
         return registerService.addUser(registerDTO);
     }
-
 
 
     @GetMapping("/user/{userId}")

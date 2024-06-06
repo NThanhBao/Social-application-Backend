@@ -53,7 +53,7 @@ public class CommentsController {
     public ResponseEntity<List<Comments>> getAllCommentsOnAllMyPosts(@RequestParam(defaultValue = "0") int page,
                                                                      @RequestParam(defaultValue = "100") int pageSize,
                                                                      @RequestParam(defaultValue = "createAt") String sortName,
-                                                                     @RequestParam(defaultValue = "DESC") String sortType)  {
+                                                                     @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
@@ -74,7 +74,7 @@ public class CommentsController {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
             Page<Comments> commentsPage = commentsService.getCommentsByPostId(postId, pageable);
-            return   ResponseEntity.ok().body(commentsPage);
+            return ResponseEntity.ok().body(commentsPage);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }

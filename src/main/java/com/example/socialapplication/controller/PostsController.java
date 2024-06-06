@@ -53,6 +53,7 @@ public class PostsController {
             return new ResponseEntity<>("An error occurred while updating the post", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @CheckLogin
     @DeleteMapping("/{postId}")
     public ResponseEntity<String> deletePost(@PathVariable("postId") UUID postId) {
@@ -73,7 +74,7 @@ public class PostsController {
                                                         @RequestParam(defaultValue = "createAt") String sortName,
                                                         @RequestParam(defaultValue = "DESC") String sortType
     ) {
-        try{
+        try {
             Sort.Direction direction;
             if (sortType.equalsIgnoreCase("ASC")) {
                 direction = Sort.Direction.ASC;
@@ -104,7 +105,7 @@ public class PostsController {
             Pageable sortedByName = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
             Page<Posts> posts = postsService.getAllPosts(sortedByName);
             return ResponseEntity.ok().body(posts.getContent());
-        } catch ( Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -116,7 +117,7 @@ public class PostsController {
     }
 
     @CheckLogin
-    @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> uploadPost(@RequestParam("filePath") MultipartFile filePath) {
         try {
             String mediaId = postService.uploadMedia(filePath);
@@ -146,7 +147,7 @@ public class PostsController {
             int numberOfPosts = postsService.getNumberOfPostsByLoggedInUser();
             return ResponseEntity.ok(numberOfPosts);
         } catch (EntityNotFoundException ex) {
-            throw new NotFoundException("User not found"+ ex);
+            throw new NotFoundException("User not found" + ex);
         }
     }
 

@@ -120,12 +120,13 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         return new ResponseEntity<>("OTP hợp lệ.", HttpStatus.OK);
     }
 
+    //    Lấy tất cả người dùng đã tạo otp
     @Override
     public Page<OTP_ResetPassword> findAllUsersWithOTP(Pageable pageable) {
         return otpRepository.findAllWithUser(pageable);
     }
 
-//    Phương thức tạo nội dung email chứa mã OTP.
+    //    Phương thức tạo nội dung email chứa mã OTP.
     private String generateOTPContent(String fullName, String otp) {
         StringBuilder emailContent = new StringBuilder();
         emailContent.append("<html><body style='font-family: Arial, sans-serif;'>");
@@ -143,7 +144,7 @@ public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
         return emailContent.toString();
     }
 
-//    Phương thức tính thời gian hết hạn của mã OTP.
+    //    Phương thức tính thời gian hết hạn của mã OTP là 5p.
     private Timestamp calculateExpirationTime() {
         long currentTimeMillis = System.currentTimeMillis();
         long expirationTimeMillis = currentTimeMillis + (OTP_EXPIRATION_MINUTES * 60 * 1000);

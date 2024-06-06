@@ -87,7 +87,7 @@ public class AdminController {
             Pageable sortedByName = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
             Page<Posts> posts = postsService.getAllPosts(sortedByName);
             return ResponseEntity.ok().body(posts.getContent());
-        } catch ( Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
@@ -96,7 +96,7 @@ public class AdminController {
     public ResponseEntity<List<Comments>> getAllCommentsOnAllPosts(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "100") int pageSize,
                                                                    @RequestParam(defaultValue = "createAt") String sortName,
-                                                                   @RequestParam(defaultValue = "DESC") String sortType)  {
+                                                                   @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));

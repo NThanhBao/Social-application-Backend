@@ -169,7 +169,6 @@ public class MediaServiceImpl implements MediaService {
     }
 
 
-
     @Override
     public Page<Medias> getAllVideosByLoggedInUser(Pageable pageable) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

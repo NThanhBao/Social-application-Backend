@@ -27,7 +27,8 @@ public class BackgroundServiceImpl implements BackgroundService {
 
     String bucketName = "background";
     Logger logger = LoggerFactory.getLogger(BackgroundServiceImpl.class);
-    public BackgroundServiceImpl( UsersRepository usersRepository) {
+
+    public BackgroundServiceImpl(UsersRepository usersRepository) {
         this.minioClient = MinioClient.builder()
                 .endpoint("http://localhost:9000")
                 .credentials("root", "12345678")
@@ -44,7 +45,7 @@ public class BackgroundServiceImpl implements BackgroundService {
 
         String userId = currentUser.getId();
 
-        try{
+        try {
             // Kiểm tra bucketName
             checkBucketName(minioClient);
 
@@ -118,6 +119,7 @@ public class BackgroundServiceImpl implements BackgroundService {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex + 1);
     }
+
     public void checkBucketName(MinioClient minioClient) throws Exception {
 
         BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()

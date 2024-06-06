@@ -106,7 +106,7 @@ public class PostsServiceImpl implements PostsService {
         List<String> mediasIdStrings = updatedPost.getMediasId();
         List<Medias> medias = new ArrayList<>();
         for (String mediaId : mediasIdStrings) {
-            Optional<Medias> mediaOptional  = mediaRepository.findById(mediaId);
+            Optional<Medias> mediaOptional = mediaRepository.findById(mediaId);
             if (mediaOptional.isPresent()) {
                 Medias media = mediaOptional.get();
                 media.setPostsId(post);

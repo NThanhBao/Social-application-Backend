@@ -15,6 +15,7 @@ public class SearchUsersServiceImpl implements SearchUsersService {
 
     private final UsersRepository searchRepository;
     private static final Logger logger = LoggerFactory.getLogger(UsersServiceImpl.class);
+
     public SearchUsersServiceImpl(UsersRepository searchRepository) {
         this.searchRepository = searchRepository;
     }

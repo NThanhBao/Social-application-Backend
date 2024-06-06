@@ -62,6 +62,7 @@ public class FollowServiceImpl implements FollowService {
             throw new InvalidRequestException("Bạn đã theo dõi người dùng này trước đó rồi.");
         }
     }
+
     @Override
     public int getFollowingCount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,6 +72,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Số lượng người dùng đang theo dõi của '{}' là: {}", currentUsername, followingCount);
         return followingCount;
     }
+
     @Override
     public int getFollowerCount() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -80,6 +82,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Số lượng người theo dõi của '{}' là: {}", currentUsername, followerCount);
         return followerCount;
     }
+
     @Override
     public void unfollowUser(String followingUserId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -106,6 +109,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Số người dùng đang theo dõi của '{}' đã được lấy: {}", username, followingCount);
         return followingCount;
     }
+
     @Override
     public int getFollowerCount(String username) {
         logger.info("Đang lấy số người theo dõi của '{}'", username);
@@ -113,6 +117,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Số người theo dõi của '{}' đã được lấy: {}", username, followerCount);
         return followerCount;
     }
+
     private UsersInfoDto usersInfoDto(Users users) {
         UsersInfoDto dto = new UsersInfoDto();
         dto.setId(users.getId());
@@ -141,6 +146,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Danh sách người dùng chưa theo dõi của '{}' đã được lấy", currentUsername);
         return users.map(this::usersInfoDto);
     }
+
     @Override
     public Page<UsersInfoDto> getFollowingListUsers(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -154,6 +160,7 @@ public class FollowServiceImpl implements FollowService {
         logger.info("Danh sách người dùng đang theo dõi của '{}' đã được lấy", currentUsername);
         return users.map(this::usersInfoDto);
     }
+
     @Override
     public Page<UsersInfoDto> getFollowerListUsers(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

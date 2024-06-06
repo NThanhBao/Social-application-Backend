@@ -32,7 +32,7 @@ public class ReactionsController {
     @PostMapping("/{object_type}/{postId}")
     public ResponseEntity<String> createReaction(@PathVariable String postId,
                                                  @PathVariable String object_type,
-                                                 @RequestParam (defaultValue = "LOVE") String  type) {
+                                                 @RequestParam(defaultValue = "LOVE") String type) {
         ReactionsDto reactionDto = new ReactionsDto();
         reactionDto.setObjectType(object_type);
         reactionDto.setObjectId(postId);
@@ -47,7 +47,7 @@ public class ReactionsController {
         try {
             reactionsService.deleteReaction(reactionsId);
             return ResponseEntity.ok("Hủy thành công reactions.");
-        }  catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
@@ -84,11 +84,11 @@ public class ReactionsController {
 
     @GetMapping("/users/{object_id}/{type}")
     public ResponseEntity<List<UsersInfoDto>> getUserByReaction(@PathVariable String object_id,
-                                                         @PathVariable String type,
-                                                         @RequestParam(defaultValue = "0") int page,
-                                                         @RequestParam(defaultValue = "10") int pageSize,
-                                                         @RequestParam(defaultValue = "createAt") String sortName,
-                                                         @RequestParam(defaultValue = "DESC") String sortType) {
+                                                                @PathVariable String type,
+                                                                @RequestParam(defaultValue = "0") int page,
+                                                                @RequestParam(defaultValue = "10") int pageSize,
+                                                                @RequestParam(defaultValue = "createAt") String sortName,
+                                                                @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Pageable sortedByName = PageRequest.of(page, pageSize, Sort.by(direction, sortName));
@@ -104,9 +104,9 @@ public class ReactionsController {
 
     @GetMapping("/all-users")
     public ResponseEntity<List<UsersInfoDto>> getAllUsersInReactions(@RequestParam(defaultValue = "0") int page,
-                                                              @RequestParam(defaultValue = "10") int pageSize,
-                                                              @RequestParam(defaultValue = "createBy") String sortName,
-                                                              @RequestParam(defaultValue = "DESC") String sortType) {
+                                                                     @RequestParam(defaultValue = "10") int pageSize,
+                                                                     @RequestParam(defaultValue = "createBy") String sortName,
+                                                                     @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
             Pageable pageable = PageRequest.of(page, pageSize, Sort.by(direction, sortName));

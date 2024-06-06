@@ -53,10 +53,12 @@ public class JwtTokenUtil {
                 .setExpiration(calendar.getTime())
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
+
     private Key getSignKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()));
@@ -70,20 +72,23 @@ public class JwtTokenUtil {
                 .parseClaimsJws(token)
                 .getBody();
     }
+
     public Date extractExpiration(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getExpiration();
     }
+
     public String extractUsername(String token) {
         Claims claims = extractAllClaims(token);
         return claims.getSubject();
     }
+
     public String extractUserId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("userId", String.class);
     }
-    public <T> T extractClaim(String token, Function<Claims,T> claimsResolver)
-    {
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
@@ -100,6 +105,7 @@ public class JwtTokenUtil {
             return true;
         }
     }
+
     // Kiểm tra tính hợp lệ của token
     public boolean isTokenValid(String token) {
         try {

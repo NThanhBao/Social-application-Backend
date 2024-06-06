@@ -25,7 +25,8 @@ public class AvatarServiceImpl implements AvatarService {
 
     String bucketName = "avatar";
     Logger logger = LoggerFactory.getLogger(AvatarServiceImpl.class);
-    public AvatarServiceImpl( UsersRepository usersRepository) {
+
+    public AvatarServiceImpl(UsersRepository usersRepository) {
         this.minioClient = MinioClient.builder()
                 .endpoint("http://localhost:9000")
                 .credentials("root", "12345678")
@@ -42,7 +43,7 @@ public class AvatarServiceImpl implements AvatarService {
 
         String userId = currentUser.getId();
 
-        try{
+        try {
             // Kiểm tra bucketName
             checkBucketName(minioClient);
 
@@ -116,6 +117,7 @@ public class AvatarServiceImpl implements AvatarService {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? "" : fileName.substring(lastDotIndex + 1);
     }
+
     public void checkBucketName(MinioClient minioClient) throws Exception {
 
         BucketExistsArgs bucketExistsArgs = BucketExistsArgs.builder()

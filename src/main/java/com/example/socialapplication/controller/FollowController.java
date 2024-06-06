@@ -58,7 +58,7 @@ public class FollowController {
     public ResponseEntity<List<UsersInfoDto>> getFollowingUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int pageSize,
-            @RequestParam(defaultValue =  "createAt") String sortName,
+            @RequestParam(defaultValue = "createAt") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType) {
 
         Sort.Direction direction;
@@ -81,7 +81,7 @@ public class FollowController {
     public ResponseEntity<List<UsersInfoDto>> getFollowingNavUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int pageSize,
-            @RequestParam(defaultValue =  "createAt") String sortName,
+            @RequestParam(defaultValue = "createAt") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType) {
 
         Sort.Direction direction;
@@ -104,7 +104,7 @@ public class FollowController {
     public ResponseEntity<List<UsersInfoDto>> getFollowerUsers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "100") int pageSize,
-            @RequestParam(defaultValue =  "createAt") String sortName,
+            @RequestParam(defaultValue = "createAt") String sortName,
             @RequestParam(defaultValue = "DESC") String sortType) {
 
         Sort.Direction direction;
@@ -151,6 +151,7 @@ public class FollowController {
                 followService.getUnfollowedUsers(pageable);
         return ResponseEntity.ok(followingUsers.getContent());
     }
+
     @CheckLogin
     @GetMapping("/ListFriends")
     public ResponseEntity<List<UsersInfoDto>> getListFriends(

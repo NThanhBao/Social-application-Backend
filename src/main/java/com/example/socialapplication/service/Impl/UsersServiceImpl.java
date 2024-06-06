@@ -27,7 +27,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-
 @Service
 public class UsersServiceImpl implements UsersService {
     private final UsersRepository registerRepository;
@@ -43,6 +42,7 @@ public class UsersServiceImpl implements UsersService {
         Matcher matcher = pattern.matcher(password);
         return matcher.matches();
     }
+
     public UsersServiceImpl(UsersRepository registerRepository, PasswordEncoder encoder, UsersRepository userRepository) {
         this.registerRepository = registerRepository;
         this.encoder = encoder;
@@ -93,7 +93,7 @@ public class UsersServiceImpl implements UsersService {
         return userRepository.findByUsername(username);
     }
 
-//    Lấy thông tin người dùng theo ID.
+    //    Lấy thông tin người dùng theo ID.
     @Override
     public UsersInfoDto getUserById(String userId) {
         Users user = userRepository.findById(userId).orElse(null);
@@ -139,7 +139,7 @@ public class UsersServiceImpl implements UsersService {
         return user;
     }
 
-//    Phương thức thêm người dùng mới.
+    //    Phương thức thêm người dùng mới.
     @Override
     public ResponseEntity<String> addUser(UsersDto registerDTO) {
         logger.info("Đang thêm người dùng với tên đăng nhập: {}", registerDTO.getUsername());
@@ -183,7 +183,7 @@ public class UsersServiceImpl implements UsersService {
         return ResponseEntity.ok("Tạo thành công với tên đăng nhập: " + user.getUsername());
     }
 
-//    Phương thức cập nhật thông tin người dùng.
+    //    Phương thức cập nhật thông tin người dùng.
     @Override
     public ResponseEntity<String> updateUser(UsersDto updatedUserDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -233,7 +233,7 @@ public class UsersServiceImpl implements UsersService {
         return ResponseEntity.ok("Bạn đã xóa thành công tài khoản của mình.");
     }
 
-//    Phương thức cập nhật mật khẩu của người dùng.
+    //    Phương thức cập nhật mật khẩu của người dùng.
     @Override
     public ResponseEntity<String> updatePassword(String email, String newPassword) {
         Users user = userRepository.findByEmail(email);

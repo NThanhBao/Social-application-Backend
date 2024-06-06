@@ -59,7 +59,7 @@ public class MediaController {
                                                       @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Page<Medias> images = mediaService.getAllImagesByUserId(userId,PageRequest.of(page, pageSize, Sort.by(direction, sortName)));
+            Page<Medias> images = mediaService.getAllImagesByUserId(userId, PageRequest.of(page, pageSize, Sort.by(direction, sortName)));
             return ResponseEntity.ok(images.getContent());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -74,7 +74,7 @@ public class MediaController {
                                                       @RequestParam(defaultValue = "DESC") String sortType) {
         try {
             Sort.Direction direction = sortType.equalsIgnoreCase("ASC") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            Page<Medias> images = mediaService.getAllVideosByUserId(userId,PageRequest.of(page, pageSize, Sort.by(direction, sortName)));
+            Page<Medias> images = mediaService.getAllVideosByUserId(userId, PageRequest.of(page, pageSize, Sort.by(direction, sortName)));
             return ResponseEntity.ok(images.getContent());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

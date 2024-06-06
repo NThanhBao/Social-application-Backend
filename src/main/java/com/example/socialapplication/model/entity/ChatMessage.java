@@ -1,4 +1,4 @@
-package com.example.socialapplication.model;
+package com.example.socialapplication.model.entity;
 
 import com.example.socialapplication.model.entity.Enum.MessageType;
 import lombok.*;

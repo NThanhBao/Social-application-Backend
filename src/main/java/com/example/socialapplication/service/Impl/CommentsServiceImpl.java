@@ -40,7 +40,7 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public Comments saveComment(CommentsDto commentsDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null ) {
+        if (auth == null) {
             throw new NotFoundException("bạn cần đăng nhập để thực hiện hành động này !");
         }
 
@@ -51,7 +51,7 @@ public class CommentsServiceImpl implements CommentsService {
         }
 
         Optional<Posts> post = postsRepository.findById(commentsDto.getPostId());
-        if (post .isEmpty()) {
+        if (post.isEmpty()) {
             throw new NotFoundException("Không tìm thấy bài viết!");
         }
 
@@ -76,7 +76,7 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public void deleteComment(UUID commentId) {
         Optional<Comments> comments = commentsRepository.findById(commentId.toString());
-        if (comments.isEmpty()){
+        if (comments.isEmpty()) {
             throw new NotFoundException("Không tìm thấy bình luận cần xóa !");
         }
         Comments comment = comments.get();
@@ -91,7 +91,7 @@ public class CommentsServiceImpl implements CommentsService {
     @Override
     public void updateComments(CommentsDto commentsDto) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null ) {
+        if (auth == null) {
             throw new NotFoundException("bạn cần đăng nhập để thực hiện hành động này !");
         }
 
@@ -103,7 +103,7 @@ public class CommentsServiceImpl implements CommentsService {
 
 
         Comments comment = commentsRepository.findById(commentsDto.getId()).orElse(null);
-        if (comment == null){
+        if (comment == null) {
             throw new NotFoundException("Không tìm thấy bình luận cần cập nhật !");
         }
 
@@ -134,6 +134,7 @@ public class CommentsServiceImpl implements CommentsService {
             throw new EntityNotFoundException("Không tìm thấy người dùng với username: " + currentUsername);
         }
     }
+
     @Override
     public int getNumberOfComments() {
         List<Comments> allPosts = commentsRepository.findAll();

@@ -1,6 +1,6 @@
 package com.example.socialapplication.controller;
 
-import com.example.socialapplication.model.ChatMessage;
+import com.example.socialapplication.model.entity.ChatMessage;
 import com.example.socialapplication.model.entity.Message;
 import com.example.socialapplication.repositories.MessageRepository;
 import org.springframework.beans.factory.annotation.Autowired;

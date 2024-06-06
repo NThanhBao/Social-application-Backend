@@ -23,7 +23,7 @@ public class BackgroundController {
     }
 
     @CheckLogin
-    @PostMapping(value = "/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    @PostMapping(value = "/upload", consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<String> uploadAvatar(@RequestParam("file") MultipartFile file) {
         try {
             backgroundService.uploadBackground(file);
@@ -32,6 +32,7 @@ public class BackgroundController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file: " + e.getMessage());
         }
     }
+
     @CheckLogin
     @DeleteMapping("/delete")
     public ResponseEntity<String> deleteAvatar(@RequestParam("objectName") String objectName) {

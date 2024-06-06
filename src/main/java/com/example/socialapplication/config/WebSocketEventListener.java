@@ -1,6 +1,6 @@
 package com.example.socialapplication.config;
 
-import com.example.socialapplication.model.ChatMessage;
+import com.example.socialapplication.model.entity.ChatMessage;
 import com.example.socialapplication.model.entity.Enum.MessageType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

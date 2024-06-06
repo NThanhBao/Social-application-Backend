@@ -96,7 +96,7 @@ public class ReactionsServiceImpl implements ReactionsService {
     @Override
     public void deleteReaction(String objectId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null ) {
+        if (auth == null) {
             throw new NotFoundException("Bạn cần đăng nhập để thực hiện hành động này!");
         }
 
@@ -255,28 +255,28 @@ public class ReactionsServiceImpl implements ReactionsService {
             myCache.put(cacheKey, reactions);
         }
         if (!reactions.isEmpty()) {
-        List<UsersInfoDto> usersDTOList = reactions.stream()
-                .map(reaction -> {
-                    Users createdBy = reaction.getCreateBy();
-                    UsersInfoDto usersInfoDto = new UsersInfoDto();
-                    usersInfoDto.setId(createdBy.getId());
-                    usersInfoDto.setUsername(createdBy.getUsername());
-                    usersInfoDto.setMail(createdBy.getMail());
-                    usersInfoDto.setGender(createdBy.isGender());
-                    usersInfoDto.setFirstName(createdBy.getFirstName());
-                    usersInfoDto.setLastName(createdBy.getLastName());
-                    usersInfoDto.setAddress(createdBy.getAddress());
-                    usersInfoDto.setDateOfBirth(createdBy.getDateOfBirth());
-                    usersInfoDto.setPhoneNumber(createdBy.getPhoneNumber());
-                    usersInfoDto.setAvatar(createdBy.getAvatar());
-                    return usersInfoDto;
-                })
-                .collect(Collectors.toList());
+            List<UsersInfoDto> usersDTOList = reactions.stream()
+                    .map(reaction -> {
+                        Users createdBy = reaction.getCreateBy();
+                        UsersInfoDto usersInfoDto = new UsersInfoDto();
+                        usersInfoDto.setId(createdBy.getId());
+                        usersInfoDto.setUsername(createdBy.getUsername());
+                        usersInfoDto.setMail(createdBy.getMail());
+                        usersInfoDto.setGender(createdBy.isGender());
+                        usersInfoDto.setFirstName(createdBy.getFirstName());
+                        usersInfoDto.setLastName(createdBy.getLastName());
+                        usersInfoDto.setAddress(createdBy.getAddress());
+                        usersInfoDto.setDateOfBirth(createdBy.getDateOfBirth());
+                        usersInfoDto.setPhoneNumber(createdBy.getPhoneNumber());
+                        usersInfoDto.setAvatar(createdBy.getAvatar());
+                        return usersInfoDto;
+                    })
+                    .collect(Collectors.toList());
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), usersDTOList.size());
-        logger.error("lấy thành công danh sách user");
-        return new PageImpl<>(usersDTOList.subList(start, end), pageable, usersDTOList.size());
+            int start = (int) pageable.getOffset();
+            int end = Math.min((start + pageable.getPageSize()), usersDTOList.size());
+            logger.error("lấy thành công danh sách user");
+            return new PageImpl<>(usersDTOList.subList(start, end), pageable, usersDTOList.size());
         } else {
             throw new IllegalArgumentException("Không tìm thấy!");
         }
