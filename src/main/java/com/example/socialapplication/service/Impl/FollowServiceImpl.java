@@ -183,8 +183,15 @@ public class FollowServiceImpl implements FollowService {
 
         Users currentUser = usersRepository.findByUsername(currentUsername);
         String currentUserId = currentUser.getId();
+
         Page<Users> users = usersRepository.findFriendByUserId(currentUserId, pageable);
-        logger.info("Danh sách bạn bè của '{}' đã được lấy", currentUsername);
+
+        if (users.isEmpty()) {
+            logger.info("Người dùng '{}' không có bạn bè.", currentUsername);
+        } else {
+            logger.info("Danh sách bạn bè của '{}' đã được lấy", currentUsername);
+        }
+
         return users.map(this::usersInfoDto);
     }
 }
