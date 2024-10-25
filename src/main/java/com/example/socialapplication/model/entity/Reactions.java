@@ -2,12 +2,16 @@ package com.example.socialapplication.model.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.sql.Timestamp;
 import java.util.Date;
 
 @Entity
 @Data
+@Getter
+@Setter
 @Table(name = "reactions")
 public class Reactions {
     @Id
@@ -28,11 +32,6 @@ public class Reactions {
     @ManyToOne
     @JoinColumn(name = "created_by")
     private Users createBy;
-
-    // Phương thức setter cho createdBy
-    public void setCreateBy(Users createBy) {
-        this.createBy = createBy;
-    }
 
     @PrePersist
     protected void onCreate() {

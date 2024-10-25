@@ -4,8 +4,8 @@ import lombok.Getter;
 
 @Getter
 public enum RoleType {
-    ADMIN(1),
-    USER(2);
+
+    ADMIN(1), USER(2);
 
     private final int id;
 

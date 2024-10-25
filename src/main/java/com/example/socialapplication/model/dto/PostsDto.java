@@ -17,5 +17,4 @@ public class PostsDto {
 
     private List<String> mediasId;
 
-
 }

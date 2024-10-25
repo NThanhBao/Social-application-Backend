@@ -28,6 +28,7 @@ import java.util.UUID;
 @Service
 @AllArgsConstructor
 public class PostsServiceImpl implements PostsService {
+
     private PostsRepository postsRepository;
     private UsersRepository usersRepository;
     private final MediaRepository mediaRepository;

@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class UsersServiceImpl implements UsersService {
+
     private final UsersRepository registerRepository;
     private final PasswordEncoder encoder;
     private final UsersRepository userRepository;

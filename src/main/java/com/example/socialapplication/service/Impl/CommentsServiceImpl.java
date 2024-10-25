@@ -26,6 +26,7 @@ import java.util.UUID;
 
 @Service
 public class CommentsServiceImpl implements CommentsService {
+
     private final UsersRepository usersRepository;
     private final CommentsRepository commentsRepository;
     private final PostsRepository postsRepository;
@@ -100,7 +101,6 @@ public class CommentsServiceImpl implements CommentsService {
         if (currentUser == null) {
             throw new NotFoundException("Không tìm thấy người dùng!");
         }
-
 
         Comments comment = commentsRepository.findById(commentsDto.getId()).orElse(null);
         if (comment == null) {

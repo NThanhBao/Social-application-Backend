@@ -19,24 +19,14 @@ public class Message {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String sender;
+    private String sender; // ID người gửi
+    private String recipient; // ID người nhận
+    private String content; // Nội dung tin nhắn
 
-    private String content;
-
-    private String recipient;
-
-    private MessageType type; // Sử dụng MessageType
+    @Enumerated(EnumType.STRING)
+    private MessageType type;
 
     private Timestamp createdAt;
-
-    public Message(Long id, String sender, String content, String recipient, MessageType type, Timestamp createdAt) {
-        this.id = id;
-        this.sender = sender;
-        this.content = content;
-        this.recipient = recipient;
-        this.type = type; // Khởi tạo type
-        this.createdAt = createdAt;
-    }
 
     @PrePersist
     protected void onCreate() {

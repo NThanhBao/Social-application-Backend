@@ -23,6 +23,7 @@ import java.sql.Timestamp;
 
 @Service
 public class OTP_ResetPasswordServiceImpl implements OTPService, EmailService {
+
     private final JavaMailSender javaMailSender;
     private final OTP_ResetPasswordRepository otpRepository;
     private final UsersRepository userRepository;

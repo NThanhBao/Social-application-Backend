@@ -20,6 +20,7 @@ import java.util.*;
 
 @Service
 public class FavoritesServiceImpl implements FavoritesService {
+
     private final UsersRepository usersRepository;
     private final PostsRepository postsRepository;
 
@@ -58,7 +59,6 @@ public class FavoritesServiceImpl implements FavoritesService {
         usersRepository.save(user);
     }
 
-
     @Override
     public Page<FavoritesDto> getFavoritesByToken(Pageable pageable) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,7 +71,6 @@ public class FavoritesServiceImpl implements FavoritesService {
 
         return favoritePostsPage.map(this::convertToDto);
     }
-
 
     private FavoritesDto convertToDto(Posts post) {
         FavoritesDto favoritesDto = new FavoritesDto();
@@ -99,7 +98,6 @@ public class FavoritesServiceImpl implements FavoritesService {
 
         return favoritesDto;
     }
-
 
     @Override
     public void deleteFavorite(String postId) {

@@ -2,11 +2,9 @@ package com.example.socialapplication.model.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 
-@Component
 @Getter
 @Setter
 public class MessengerDto {
@@ -20,4 +18,5 @@ public class MessengerDto {
    private String recipient;
 
    private Timestamp createdAt;
+
 }

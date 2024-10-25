@@ -33,12 +33,13 @@ import java.util.UUID;
 
 @Service
 public class MediaServiceImpl implements MediaService {
+
     private final MinioClient minioClient;
     private final UsersRepository usersRepository;
     private final MediaRepository mediaRepository;
     private final PostsRepository postsRepository;
-    String bucketName = "posts";
     private static final Logger logger = LoggerFactory.getLogger(MediaServiceImpl.class);
+    String bucketName = "posts";
 
     public MediaServiceImpl(UsersRepository usersRepository, MediaRepository mediaRepository, PostsRepository postsRepository) {
         this.postsRepository = postsRepository;

@@ -34,7 +34,6 @@ public class AvatarServiceImpl implements AvatarService {
         this.usersRepository = usersRepository;
     }
 
-
     @Override
     public void uploadAvatar(MultipartFile file) throws Exception {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

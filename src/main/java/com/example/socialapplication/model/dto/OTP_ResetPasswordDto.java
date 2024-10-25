@@ -6,11 +6,17 @@ import lombok.Data;
 import java.sql.Timestamp;
 @Data
 public class OTP_ResetPasswordDto {
+
     private String id;
+
     private Users userId;
+
     private String mail;
+
     private String otp;
+
     private Timestamp createAt;
+
     private Timestamp expirationTime;
 
     @Override
