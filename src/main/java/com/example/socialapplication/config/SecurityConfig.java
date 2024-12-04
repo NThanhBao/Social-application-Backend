@@ -67,13 +67,13 @@ public class SecurityConfig {
                 .build();
     }
 
-//    @Bean
-//    public OpenAPI openAPI() {
-//        return new OpenAPI().addSecurityItem(new SecurityRequirement().
-//                        addList("Bearer Authentication"))
-//                .components(new Components().addSecuritySchemes
-//                        ("Bearer Authentication", createAPIKeyScheme()));
-//    }
+    @Bean
+    public OpenAPI openAPI() {
+        return new OpenAPI().addSecurityItem(new SecurityRequirement().
+                        addList("Bearer Authentication"))
+                .components(new Components().addSecuritySchemes
+                        ("Bearer Authentication", createAPIKeyScheme()));
+    }
 
     //    Tạo một SecurityScheme để sử dụng JWT cho bảo mật API.
     private SecurityScheme createAPIKeyScheme() {

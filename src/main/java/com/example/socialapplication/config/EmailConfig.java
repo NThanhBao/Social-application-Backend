@@ -16,8 +16,11 @@ public class EmailConfig {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("ntbs.social.media@gmail.com");
-        mailSender.setPassword("wgon bzbf dief vxyo");
+//        mailSender.setUsername("ntbs.social.media@gmail.com");
+//        mailSender.setPassword("wgon bzbf dief vxyo");
+
+        mailSender.setUsername("ntbs.customer.services@gmail.com");
+        mailSender.setPassword("gdto zidq wrsf asne");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.smtp.auth", "true");
